@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
-  <includeClasses/>
+  <includeClasses>
+    <classEntry path="by.blooddy.secret.display.DisplayObject"/>
+    <classEntry path="by.blooddy.secret.display.InteractiveObject"/>
+    <classEntry path="by.blooddy.secret.display.DisplayObjectContainer"/>
+    <classEntry path="by.blooddy.secret.display.Sprite"/>
+    <classEntry path="by.blooddy.secret.display.MovieClip"/>
+    <classEntry path="by.blooddy.secret.display.Bitmap"/>
+    <classEntry path="by.blooddy.secret.display.SimpleButton"/>
+    <classEntry path="by.blooddy.secret.display.NativeDisplayObjectContainer"/>
+    <classEntry path="by.blooddy.secret.display.$internal"/>
+    <classEntry path="by.blooddy.secret.display.Stage"/>
+  </includeClasses>
   <includeResources/>
   <namespaceManifests/>
 </flexLibProperties>
