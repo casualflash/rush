@@ -11,6 +11,7 @@
     <classEntry path="by.blooddy.secret.display.NativeDisplayObjectContainer"/>
     <classEntry path="by.blooddy.secret.display.$internal"/>
     <classEntry path="by.blooddy.secret.display.Stage"/>
+    <classEntry path="by.blooddy.secret.geom.Transform"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

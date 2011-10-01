@@ -28,6 +28,49 @@ package by.blooddy.secret.display {
 			super();
 		}
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+
+		/*
+		
+		TODO:
+		
+		mouseChildren
+		numChildren
+		tabChildren?
+		
+		*/
+
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+
+		/*
+		
+		TODO:
+		
+		contains
+		getChildAt
+		getChildByName
+		getChildIndex
+		addChild
+		addChildAt
+		removeChild
+		removeChildAt
+		setChildIndex
+		swapChildren
+		swapChildrenAt
+		
+		getObjectsUnderPoint
+
+		
+		*/
+
 	}
 	
 }

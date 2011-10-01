@@ -6,6 +6,32 @@
 
 package by.blooddy.secret.display {
 	
+	//--------------------------------------
+	//  Events
+	//--------------------------------------
+	
+	/*
+	
+	TODO
+
+	click
+	doubleClick
+	mouseDown
+	mouseUp
+	mouseMove
+	mouseOver
+	mouseOut
+	mouseWheel
+	rollOver
+	rollOut
+
+	touch events?
+	
+	focusIn?
+	focusOut?
+
+	*/
+
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
@@ -28,6 +54,24 @@ package by.blooddy.secret.display {
 			super();
 		}
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+
+		/*
+		
+		contextMenu?
+		focusRect?
+
+		doubleClickEnabled
+		mouseEnabled
+		tabEnabled?
+		tabIndex
+
+		*/
+
 	}
 	
 }

@@ -9,6 +9,27 @@ package by.blooddy.secret.display {
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	
+	//--------------------------------------
+	//  Events
+	//--------------------------------------
+
+	/*
+	
+	TODO
+	
+	added
+	addedToStage
+	removed
+	removedFromStage
+	
+	BROADCSTED:
+	enterFrame
+	exitFrame
+	frameConstructed?
+	render
+	
+	*/
+	
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
@@ -75,7 +96,8 @@ package by.blooddy.secret.display {
 		parent
 		root
 		stage
-		
+		mask?
+
 		*/
 
 		//--------------------------------------------------------------------------
@@ -84,7 +106,21 @@ package by.blooddy.secret.display {
 		//
 		//--------------------------------------------------------------------------
 
+		/*
 		
+		TODO
+		
+		getBounds
+		getRect
+		globalToLocal
+		localToGlobal
+		globalToLocal3D?
+		local3DToGlobal?
+		
+		hitTestPoint
+		hitTestObject
+		
+		*/
 		
 	}
 	

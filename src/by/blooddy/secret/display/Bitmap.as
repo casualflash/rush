@@ -5,6 +5,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 package by.blooddy.secret.display {
+
+	import flash.display.BitmapData;
+	import flash.display.PixelSnapping;
 	
 	/**
 	 * @author					BlooDHounD
@@ -24,10 +27,26 @@ package by.blooddy.secret.display {
 		/**
 		 * Constructor
 		 */
-		public function Bitmap() {
+		public function Bitmap(bitmapData:BitmapData=null, pixelSnapping:String=PixelSnapping.AUTO, smoothing:Boolean=false) {
 			super();
 		}
+
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+
+		/*
 		
+		TODO:
+		
+		bitmapData
+		pixelSnapping
+		smoothing
+		
+		*/
+
 	}
 	
 }

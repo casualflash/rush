@@ -28,6 +28,25 @@ package by.blooddy.secret.display {
 			super();
 		}
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+
+		/*
+		
+		TODO:
+		
+		enabled
+		upState
+		overState
+		downState
+		hitTestState
+		useHandCursor
+
+		*/
+
 	}
 	
 }

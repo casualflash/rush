@@ -4,29 +4,16 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.display {
+package by.blooddy.secret.geom {
 	
-	//--------------------------------------
-	//  Events
-	//--------------------------------------
-	
-	/*
-	
-	TODO
-
-	mouseLeave
-	resize?
-	
-	*/
-
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 18:07:36
+	 * @created					01.10.2011 18:45:21
 	 */
-	public class Stage extends DisplayObjectContainer {
+	public class Transform {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -35,12 +22,13 @@ package by.blooddy.secret.display {
 		//--------------------------------------------------------------------------
 		
 		/**
+		 * @private
 		 * Constructor
 		 */
-		public function Stage() {
+		public function Transform() {
 			super();
 		}
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -51,57 +39,27 @@ package by.blooddy.secret.display {
 		
 		TODO:
 		
-		align?
-		color? wtf?
-		focus?
-		frameRate?
-		scaleMode?
+		colorTransform
+		concatenatedColorTransform?
+		matrix
+		concatenatedMatrix?
+		matrix3D?
+		perspectiveProjection?
+		pixelBounds
+		
+		*/
 
-		stageHeight
-		stageWidth
-		
-		
-		*/
-		
-		/*
-		
-		OVERRIDE SETTERS:
-		
-		alpha
-		blendMode
-		contextMenu
-		filters
-		focusRect
-		loaderInfo
-		mask
-		mouseEnabled
-		name
-		opaqueBackground
-		rotation
-		scale9Grid
-		scaleX
-		scaleY
-		scrollRect
-		tabEnabled
-		tabIndex
-		transform
-		visible
-		x
-		y 
-		
-		*/
-		
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
 		//
 		//--------------------------------------------------------------------------
-
+		
 		/*
 		
-		TODO:
+		TODO
 		
-		invalidate
+		getRelativeMatrix3D
 		
 		*/
 
