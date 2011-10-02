@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
   <includeClasses>
-    <classEntry path="by.blooddy.secret.display.DisplayObject"/>
-    <classEntry path="by.blooddy.secret.display.InteractiveObject"/>
-    <classEntry path="by.blooddy.secret.display.DisplayObjectContainer"/>
-    <classEntry path="by.blooddy.secret.display.Sprite"/>
-    <classEntry path="by.blooddy.secret.display.MovieClip"/>
-    <classEntry path="by.blooddy.secret.display.Bitmap"/>
-    <classEntry path="by.blooddy.secret.display.SimpleButton"/>
-    <classEntry path="by.blooddy.secret.display.NativeDisplayObjectContainer"/>
+    <classEntry path="by.blooddy.secret.display.DisplayObject2D"/>
+    <classEntry path="by.blooddy.secret.display.InteractiveObject2D"/>
+    <classEntry path="by.blooddy.secret.display.DisplayObjectContainer2D"/>
+    <classEntry path="by.blooddy.secret.display.Sprite2D"/>
+    <classEntry path="by.blooddy.secret.display.MovieClip2D"/>
+    <classEntry path="by.blooddy.secret.display.Bitmap2D"/>
+    <classEntry path="by.blooddy.secret.display.SimpleButton2D"/>
+    <classEntry path="by.blooddy.secret.display.NativeDisplayObjectContainer2D"/>
     <classEntry path="by.blooddy.secret.display.$internal"/>
-    <classEntry path="by.blooddy.secret.display.Stage"/>
+    <classEntry path="by.blooddy.secret.display.Stage2D"/>
     <classEntry path="by.blooddy.secret.geom.Transform"/>
     <classEntry path="by.blooddy.secret.display.NativeEvent"/>
-    <classEntry path="by.blooddy.secret.events.Event"/>
+    <classEntry path="by.blooddy.secret.events.Event2D"/>
+    <classEntry path="by.blooddy.secret.display.INativeEvent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

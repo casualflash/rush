@@ -5,18 +5,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 package by.blooddy.secret.display {
-
-	import flash.display.BitmapData;
-	import flash.display.PixelSnapping;
 	
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 18:01:46
+	 * @created					01.10.2011 18:01:02
 	 */
-	public class Bitmap extends DisplayObject {
+	public class Sprite2D extends DisplayObjectContainer2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -27,10 +24,10 @@ package by.blooddy.secret.display {
 		/**
 		 * Constructor
 		 */
-		public function Bitmap(bitmapData:BitmapData=null, pixelSnapping:String=PixelSnapping.AUTO, smoothing:Boolean=false) {
+		public function Sprite2D() {
 			super();
 		}
-
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -40,10 +37,30 @@ package by.blooddy.secret.display {
 		/*
 		
 		TODO:
+
+		graphics?
 		
-		bitmapData
-		pixelSnapping
-		smoothing
+		buttonMode
+		useHandCursor
+		dropTarget
+		hitArea
+		
+		*/
+
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+
+		/*
+		
+		TODO:
+		
+		startDrag?
+		stopDrag?
+		startTouchDrag?
+		stopTouchDrag?
 		
 		*/
 

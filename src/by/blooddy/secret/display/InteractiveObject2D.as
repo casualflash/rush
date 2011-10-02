@@ -6,14 +6,40 @@
 
 package by.blooddy.secret.display {
 	
+	//--------------------------------------
+	//  Events
+	//--------------------------------------
+	
+	/*
+	
+	TODO
+
+	click
+	doubleClick
+	mouseDown
+	mouseUp
+	mouseMove
+	mouseOver
+	mouseOut
+	mouseWheel
+	rollOver
+	rollOut
+
+	touch events?
+	
+	focusIn?
+	focusOut?
+
+	*/
+
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 18:03:23
+	 * @created					01.10.2011 18:00:25
 	 */
-	public class SimpleButton extends NativeDisplayObjectContainer {
+	public class InteractiveObject2D extends DisplayObject2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -24,7 +50,7 @@ package by.blooddy.secret.display {
 		/**
 		 * Constructor
 		 */
-		public function SimpleButton() {
+		public function InteractiveObject2D() {
 			super();
 		}
 		
@@ -36,14 +62,13 @@ package by.blooddy.secret.display {
 
 		/*
 		
-		TODO:
-		
-		enabled
-		upState
-		overState
-		downState
-		hitTestState
-		useHandCursor
+		contextMenu?
+		focusRect?
+
+		doubleClickEnabled
+		mouseEnabled
+		tabEnabled?
+		tabIndex
 
 		*/
 

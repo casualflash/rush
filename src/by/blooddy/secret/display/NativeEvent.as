@@ -28,7 +28,7 @@ package by.blooddy.secret.display {
 	 * @langversion				3.0
 	 * @created					01.10.2011 19:44:49
 	 */
-	public class NativeEvent extends Event {
+	public class NativeEvent extends Event implements INativeEvent {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -64,23 +64,23 @@ package by.blooddy.secret.display {
 		//  Variables
 		//
 		//--------------------------------------------------------------------------
-		
+
 		/**
 		 * @private
 		 */
 		$internal var $stopped:Boolean = false;
-		
+
 		/**
 		 * @private
 		 */
 		$internal var $canceled:Boolean = false;
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Overriden properties: Event
 		//
 		//--------------------------------------------------------------------------
-		
+
 		//----------------------------------
 		//  target
 		//----------------------------------

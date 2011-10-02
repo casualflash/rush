@@ -8,7 +8,7 @@ package by.blooddy.secret.display {
 	
 	import avmplus.getQualifiedSuperclassName;
 	
-	import by.blooddy.secret.events.Event;
+	import by.blooddy.secret.events.Event2D;
 	import by.blooddy.secret.geom.Transform;
 	
 	import flash.display.Shape;
@@ -24,21 +24,21 @@ package by.blooddy.secret.display {
 	//  Events
 	//--------------------------------------
 
-	[Event( name="added", type="by.blooddy.secret.events.Event" )]
+	[Event( name="added", type="flash.events.Event" )]
 
-	[Event( name="removed", type="by.blooddy.secret.events.Event" )]
+	[Event( name="removed", type="flash.events.Event" )]
 
-	[Event( name="addedToStage", type="by.blooddy.secret.events.Event" )]
+	[Event( name="addedToStage", type="flash.events.Event" )]
 
-	[Event( name="removedFromStage", type="by.blooddy.secret.events.Event" )]
+	[Event( name="removedFromStage", type="flash.events.Event" )]
 
-	[Event( name="enterFrame", type="by.blooddy.secret.events.Event" )]
+	[Event( name="enterFrame", type="flash.events.Event" )]
 
-	[Event( name="exitFrame", type="by.blooddy.secret.events.Event" )]
+	[Event( name="exitFrame", type="flash.events.Event" )]
 
-	[Event( name="frameConstructed", type="by.blooddy.secret.events.Event" )]
+	[Event( name="frameConstructed", type="flash.events.Event" )]
 	
-	[Event( name="render", type="by.blooddy.secret.events.Event" )]
+	[Event( name="render", type="flash.events.Event" )]
 
 	/*
 	
@@ -55,7 +55,7 @@ package by.blooddy.secret.display {
 	 * @langversion				3.0
 	 * @created					01.10.2011 17:45:12
 	 */
-	public class DisplayObject implements IEventDispatcher {
+	public class DisplayObject2D implements IEventDispatcher {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -72,9 +72,9 @@ package by.blooddy.secret.display {
 		 * @private
 		 */
 		private static const _BROADCAST_EVENTS:Object = new Object();
-		_BROADCAST_EVENTS[ by.blooddy.secret.events.Event.ENTER_FRAME ] = true;
-		_BROADCAST_EVENTS[ by.blooddy.secret.events.Event.EXIT_FRAME ] = true;
-		_BROADCAST_EVENTS[ by.blooddy.secret.events.Event.FRAME_CONSTRUCTED ] = true;
+		_BROADCAST_EVENTS[ Event.ENTER_FRAME ] = true;
+		_BROADCAST_EVENTS[ Event.EXIT_FRAME ] = true;
+		_BROADCAST_EVENTS[ Event.FRAME_CONSTRUCTED ] = true;
 
 		//--------------------------------------------------------------------------
 		//
@@ -86,10 +86,10 @@ package by.blooddy.secret.display {
 		 * @private
 		 * Constructor
 		 */
-		public function DisplayObject() {
+		public function DisplayObject2D() {
 			super();
 			// TODO: сделать проверку на конкретный класс
-			if ( ( this as Object ).constructor === DisplayObject ) {
+			if ( ( this as Object ).constructor === DisplayObject2D ) {
 				Error.throwError( IllegalOperationError, 2012, getQualifiedSuperclassName( this ) );
 			}
 			this._bubble = new EventDispatcher( this );
@@ -114,7 +114,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		private var _parents:Vector.<DisplayObject>;
+		private var _parents:Vector.<DisplayObject2D>;
 
 		//--------------------------------------------------------------------------
 		//
@@ -168,15 +168,15 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal var _parent:NativeDisplayObjectContainer;
+		$internal var _parent:NativeDisplayObjectContainer2D;
 
 		/**
 		 * @private
 		 */
-		$internal var _bubbleParent:NativeDisplayObjectContainer;
+		$internal var _bubbleParent:NativeDisplayObjectContainer2D;
 
-		public function get parent():DisplayObjectContainer {
-			return this._parent as DisplayObjectContainer;
+		public function get parent():DisplayObjectContainer2D {
+			return this._parent as DisplayObjectContainer2D;
 		}
 
 		//----------------------------------
@@ -186,9 +186,9 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal var _stage:Stage;
+		$internal var _stage:Stage2D;
 
-		public function get stage():Stage {
+		public function get stage():Stage2D {
 			return this._stage;
 		}
 
@@ -196,7 +196,7 @@ package by.blooddy.secret.display {
 		//  root
 		//----------------------------------
 		
-		public function get root():DisplayObjectContainer {
+		public function get root():DisplayObjectContainer2D {
 			return this._stage;
 		}
 		
@@ -268,7 +268,7 @@ package by.blooddy.secret.display {
 			if ( this._bubble.hasEventListener( type ) || ( this._capture && this._capture.hasEventListener( type ) ) ) {
 				return true;
 			}
-			var target:DisplayObject = this._bubbleParent;
+			var target:DisplayObject2D = this._bubbleParent;
 			while ( target ) {
 				if ( target.hasEventListener( type ) || ( target._capture && target._capture.hasEventListener( type ) ) ) {
 					return true;
@@ -278,7 +278,7 @@ package by.blooddy.secret.display {
 			return false;
 		}
 
-		public function dispatchEvent(event:flash.events.Event):Boolean {
+		public function dispatchEvent(event:Event):Boolean {
 			if ( event.bubbles ) {
 				if ( !( event is NativeEvent ) ) throw new ArgumentError();
 				return this.$dispatchEventFunction( event as NativeEvent );
@@ -312,22 +312,22 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal function $setParent(parent:NativeDisplayObjectContainer):void {
+		$internal function $setParent(parent:NativeDisplayObjectContainer2D):void {
 			if ( this._parent ) {
 				this._bubbleParent = this._parent;
-				this.$dispatchEventFunction( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.REMOVED, true ) );
+				this.$dispatchEventFunction( new Event2D( Event.REMOVED, true ) );
 				if ( this._stage ) {
-					this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.REMOVED_FROM_STAGE ) );
+					this._bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
 				}
 			}
 			if ( parent ) {
 				if ( this._parent !== parent ) {
-					this._stage = ( parent as DisplayObject )._stage;
+					this._stage = ( parent as DisplayObject2D )._stage;
 					this._parent = parent;
 					this._bubbleParent = parent;
-					this.$dispatchEventFunction( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.ADDED, true ) );
+					this.$dispatchEventFunction( new Event2D( Event.ADDED, true ) );
 					if ( this._stage ) {
-						this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.ADDED_TO_STAGE ) );
+						this._bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
 					}
 				}
 			} else {
@@ -339,14 +339,14 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal function $setStage(stage:Stage):void {
+		$internal function $setStage(stage:Stage2D):void {
 			if ( this._stage ) {
-				this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.REMOVED_FROM_STAGE ) );
+				this._bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
 			}
 			if ( stage ) {
 				if ( this._stage !== stage ) {
 					this._stage = stage;
-					this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.ADDED_TO_STAGE ) );
+					this._bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
 				}
 			} else {
 				this._stage = null;
@@ -358,9 +358,9 @@ package by.blooddy.secret.display {
 		 */
 		$internal function $dispatchEventFunction(event:NativeEvent):Boolean {
 			var canceled:Boolean = false;
-			var target:DisplayObject;
+			var target:DisplayObject2D;
 			if ( !this._parents ) {
-				this._parents = new Vector.<DisplayObject>();
+				this._parents = new Vector.<DisplayObject2D>();
 				target = this._bubbleParent;
 				while ( target ) {
 					this._parents.push( target );

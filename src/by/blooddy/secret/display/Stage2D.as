@@ -33,7 +33,7 @@ package by.blooddy.secret.display {
 	 * @langversion				3.0
 	 * @created					01.10.2011 18:07:36
 	 */
-	public class Stage extends DisplayObjectContainer {
+	public class Stage2D extends DisplayObjectContainer2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -44,7 +44,7 @@ package by.blooddy.secret.display {
 		/**
 		 * Constructor
 		 */
-		public function Stage() {
+		public function Stage2D() {
 			super();
 			this._stage = this;
 		}
@@ -215,11 +215,11 @@ package by.blooddy.secret.display {
 		//
 		//--------------------------------------------------------------------------
 
-		$internal override function $setParent(parent:NativeDisplayObjectContainer):void {
+		$internal override function $setParent(parent:NativeDisplayObjectContainer2D):void {
 			throw new IllegalOperationError();
 		}
 
-		$internal override function $setStage(stage:Stage):void {
+		$internal override function $setStage(stage:Stage2D):void {
 			throw new IllegalOperationError();
 		}
 

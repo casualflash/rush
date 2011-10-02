@@ -15,7 +15,7 @@ package by.blooddy.secret.display {
 	 * @langversion				3.0
 	 * @created					01.10.2011 18:00:39
 	 */
-	public class DisplayObjectContainer extends NativeDisplayObjectContainer {
+	public class DisplayObjectContainer2D extends NativeDisplayObjectContainer2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -26,7 +26,7 @@ package by.blooddy.secret.display {
 		/**
 		 * Constructor
 		 */
-		public function DisplayObjectContainer() {
+		public function DisplayObjectContainer2D() {
 			super();
 		}
 		
@@ -73,49 +73,49 @@ package by.blooddy.secret.display {
 		
 		*/
 		
-		public function addChild(child:DisplayObject):DisplayObject {
+		public function addChild(child:DisplayObject2D):DisplayObject2D {
 			return this.$addChildAt( child, this._list.length );
 		}
 		
-		public function addChildAt(child:DisplayObject, index:int):DisplayObject {
+		public function addChildAt(child:DisplayObject2D, index:int):DisplayObject2D {
 			return this.$addChildAt( child, index  );
 		}
 		
-		public function removeChild(child:DisplayObject):DisplayObject {
+		public function removeChild(child:DisplayObject2D):DisplayObject2D {
 			return this.$removeChildAt( this.$getChildIndex( child ) );
 		}
 		
-		public function removeChildAt(index:int):DisplayObject {
+		public function removeChildAt(index:int):DisplayObject2D {
 			return this.$removeChildAt( index );
 		}
 		
-		public function contains(child:DisplayObject):Boolean {
+		public function contains(child:DisplayObject2D):Boolean {
 			// проверим наличие передоваемого объекта
 			if ( !child )  Error.throwError( TypeError, 2007, 'child' );
 			return this.$contains( child );
 		}
 		
-		public function getChildAt(index:int):DisplayObject {
+		public function getChildAt(index:int):DisplayObject2D {
 			return this.$getChildAt( index );
 		}
 		
-		public function getChildByName(name:String):DisplayObject {
+		public function getChildByName(name:String):DisplayObject2D {
 			// проверяем мы ли родитель
-			for each ( var child:DisplayObject in this._list ) {
+			for each ( var child:DisplayObject2D in this._list ) {
 				if ( child._name === name ) return child;
 			}
 			return null;
 		}
 		
-		public function getChildIndex(child:DisplayObject):int {
+		public function getChildIndex(child:DisplayObject2D):int {
 			return this.$getChildIndex( child );
 		}
 		
-		public function setChildIndex(child:DisplayObject, index:int):void {
+		public function setChildIndex(child:DisplayObject2D, index:int):void {
 			this.$setChildIndex( child, index );
 		}
 		
-		public function swapChildren(child1:DisplayObject, child2:DisplayObject):void {
+		public function swapChildren(child1:DisplayObject2D, child2:DisplayObject2D):void {
 			this.$swapChildrenAt( child1, child2, this.$getChildIndex( child1 ), this.$getChildIndex( child2 ) );
 		}
 		

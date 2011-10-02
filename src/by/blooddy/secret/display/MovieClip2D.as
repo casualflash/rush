@@ -11,9 +11,9 @@ package by.blooddy.secret.display {
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 18:01:02
+	 * @created					01.10.2011 18:01:15
 	 */
-	public class Sprite extends DisplayObjectContainer {
+	public class MovieClip2D extends Sprite2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -24,7 +24,7 @@ package by.blooddy.secret.display {
 		/**
 		 * Constructor
 		 */
-		public function Sprite() {
+		public function MovieClip2D() {
 			super();
 		}
 		
@@ -33,20 +33,20 @@ package by.blooddy.secret.display {
 		//  Properties
 		//
 		//--------------------------------------------------------------------------
-
+		
 		/*
 		
-		TODO:
-
-		graphics?
+		TODO
 		
-		buttonMode
-		useHandCursor
-		dropTarget
-		hitArea
+		currentFrame
+		currentFrameLabel
+		currentLabel
+		totalFrames
+		
+		enabled
 		
 		*/
-
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
@@ -57,10 +57,12 @@ package by.blooddy.secret.display {
 		
 		TODO:
 		
-		startDrag?
-		stopDrag?
-		startTouchDrag?
-		stopTouchDrag?
+		nextFrame
+		prevFrame
+		play
+		stop
+		gotoAndPlay
+		gotoAndStop
 		
 		*/
 

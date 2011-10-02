@@ -6,7 +6,9 @@
 
 package by.blooddy.secret.display {
 
-	import by.blooddy.secret.events.Event;
+	import by.blooddy.secret.events.Event2D;
+	
+	import flash.events.Event;
 
 	use namespace $internal;
 
@@ -18,7 +20,7 @@ package by.blooddy.secret.display {
 	 * @langversion				3.0
 	 * @created					01.10.2011 18:04:48
 	 */
-	internal class NativeDisplayObjectContainer extends InteractiveObject {
+	internal class NativeDisplayObjectContainer2D extends InteractiveObject2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -29,7 +31,7 @@ package by.blooddy.secret.display {
 		/**
 		 * Constructor
 		 */
-		public function NativeDisplayObjectContainer() {
+		public function NativeDisplayObjectContainer2D() {
 			super();
 		}
 		
@@ -42,7 +44,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal const _list:Vector.<DisplayObject> = new Vector.<DisplayObject>();
+		$internal const _list:Vector.<DisplayObject2D> = new Vector.<DisplayObject2D>();
 		
 		//--------------------------------------------------------------------------
 		//
@@ -50,13 +52,13 @@ package by.blooddy.secret.display {
 		//
 		//--------------------------------------------------------------------------
 
-		$internal override function $setParent(parent:NativeDisplayObjectContainer):void {
-			var child:DisplayObject;
+		$internal override function $setParent(parent:NativeDisplayObjectContainer2D):void {
+			var child:DisplayObject2D;
 			if ( this._parent ) { // мы потеряли СТАРОГО папу
 				this._bubbleParent = this._parent;
-				this.$dispatchEventFunction( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.REMOVED, true ) );
+				this.$dispatchEventFunction( new Event2D( Event.REMOVED, true ) );
 				if ( this._stage ) {
-					this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.REMOVED_FROM_STAGE ) );
+					this._bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
 					for each ( child in this._list ) {
 						child.$setStage( null );
 					}
@@ -64,12 +66,12 @@ package by.blooddy.secret.display {
 			}
 			if ( parent ) {
 				if ( this._parent !== parent ) {
-					this._stage = ( parent as DisplayObject )._stage;
+					this._stage = ( parent as DisplayObject2D )._stage;
 					this._parent = parent;
 					this._bubbleParent = parent;
-					this.$dispatchEventFunction( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.ADDED, true ) );
+					this.$dispatchEventFunction( new Event2D( Event.ADDED, true ) );
 					if ( this._stage ) {
-						this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.ADDED_TO_STAGE ) );
+						this._bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
 						for each ( child in this._list ) {
 							child.$setStage( this._stage );
 						}
@@ -81,10 +83,10 @@ package by.blooddy.secret.display {
 			}
 		}
 		
-		$internal override function $setStage(stage:Stage):void {
-			var child:DisplayObject;
+		$internal override function $setStage(stage:Stage2D):void {
+			var child:DisplayObject2D;
 			if ( this._stage ) {
-				this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.REMOVED_FROM_STAGE ) );
+				this._bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
 				for each ( child in this._list ) {
 					child.$setStage( null );
 				}
@@ -92,7 +94,7 @@ package by.blooddy.secret.display {
 			if ( stage ) {
 				if ( this._stage !== stage ) {
 					this._stage = stage;
-					this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.ADDED_TO_STAGE ) );
+					this._bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
 					for each ( child in this._list ) {
 						child.$setStage( this._stage );
 					}
@@ -105,7 +107,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal function $addChildAt(child:DisplayObject, index:int):DisplayObject {
+		$internal function $addChildAt(child:DisplayObject2D, index:int):DisplayObject2D {
 			// проверим наличие передоваемого объекта
 			if ( !child ) Error.throwError( TypeError, 2007, 'child' );
 			// проверим рэндж
@@ -116,7 +118,7 @@ package by.blooddy.secret.display {
 			if ( child._parent === this ) {
 				this.$setChildIndex( child, index, false );
 			} else {
-				var parent:NativeDisplayObjectContainer = child._parent;
+				var parent:NativeDisplayObjectContainer2D = child._parent;
 				if ( parent ) {
 					parent.$removeChildAt(
 						parent.$getChildIndex(
@@ -127,7 +129,7 @@ package by.blooddy.secret.display {
 					);
 				}
 				// проверим нашу пренадлежность, вдруг зацикливание
-				if ( child is NativeDisplayObjectContainer && ( child as NativeDisplayObjectContainer ).$contains( this ) ) {
+				if ( child is NativeDisplayObjectContainer2D && ( child as NativeDisplayObjectContainer2D ).$contains( this ) ) {
 					Error.throwError( ArgumentError, 2150 );
 				}
 				// добавляем
@@ -142,13 +144,13 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal function $removeChildAt(index:int, strict:Boolean=true):DisplayObject {
+		$internal function $removeChildAt(index:int, strict:Boolean=true):DisplayObject2D {
 			if ( strict ) {
 				// проверим рэндж
 				if ( index < 0 || index > this._list.length ) Error.throwError( RangeError, 2006 );
 			}
 			// удалим
-			var child:DisplayObject = this._list.splice( index, 1 )[ 0 ];
+			var child:DisplayObject2D = this._list.splice( index, 1 )[ 0 ];
 			// обновим
 			child.$setParent( null );
 			// вернём
@@ -158,7 +160,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal function $contains(child:DisplayObject):Boolean {
+		$internal function $contains(child:DisplayObject2D):Boolean {
 			// проверим нашу пренадлежность, вдруг зацикливание
 			do {
 				if ( child === this ) return true;
@@ -169,7 +171,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal function $getChildAt(index:int):DisplayObject {
+		$internal function $getChildAt(index:int):DisplayObject2D {
 			// проверим рэндж
 			if ( index<0 || index>this._list.length ) Error.throwError( RangeError, 2006 );
 			return this._list[ index ];
@@ -178,7 +180,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal function $getChildIndex(child:DisplayObject, strict:Boolean=true):int {
+		$internal function $getChildIndex(child:DisplayObject2D, strict:Boolean=true):int {
 			if ( strict ) {
 				// проверяем мы ли родитель
 				if ( !child || child._parent !== this ) Error.throwError( ArgumentError, 2025 );
@@ -190,7 +192,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal function $setChildIndex(child:DisplayObject, index:int, strict:Boolean=true):void {
+		$internal function $setChildIndex(child:DisplayObject2D, index:int, strict:Boolean=true):void {
 			if ( strict ) {
 				if ( !child )  Error.throwError( TypeError, 2007, 'child' );
 				// проверим рэндж
@@ -203,7 +205,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal function $swapChildrenAt(child1:DisplayObject, child2:DisplayObject, index1:int, index2:int):void {
+		$internal function $swapChildrenAt(child1:DisplayObject2D, child2:DisplayObject2D, index1:int, index2:int):void {
 			// надо сперва поставить того кто выше
 			if ( index1 > index2 ) {
 				this.$setChildIndex( child1, index2, false );
