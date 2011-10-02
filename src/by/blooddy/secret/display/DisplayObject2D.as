@@ -316,8 +316,8 @@ package by.blooddy.secret.display {
 		$internal function $setParent(parent:NativeDisplayObjectContainer2D):void {
 			if ( this.$parent ) {
 				this.$dispatchEventFunction( new $Event( Event.REMOVED, true ) );
-				if ( this.$stage ) {
-					this.$bubble.dispatchEvent( new $Event( Event.REMOVED_FROM_STAGE ) );
+				if ( this.$stage  && this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
+					this.$bubble.dispatchEvent( new Event( Event.REMOVED_FROM_STAGE ) );
 				}
 			}
 			if ( parent ) {
@@ -325,8 +325,8 @@ package by.blooddy.secret.display {
 					this.$stage = ( parent as DisplayObject2D ).$stage;
 					this.$parent = parent;
 					this.$dispatchEventFunction( new $Event( Event.ADDED, true ) );
-					if ( this.$stage ) {
-						this.$bubble.dispatchEvent( new $Event( Event.ADDED_TO_STAGE ) );
+					if ( this.$stage && this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
+						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
 					}
 				}
 			} else {
@@ -339,13 +339,15 @@ package by.blooddy.secret.display {
 		 * @private
 		 */
 		$internal function $setStage(stage:Stage2D):void {
-			if ( this.$stage ) {
-				this.$bubble.dispatchEvent( new $Event( Event.REMOVED_FROM_STAGE ) );
+			if ( this.$stage && this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
+				this.$bubble.dispatchEvent( new Event( Event.REMOVED_FROM_STAGE ) );
 			}
 			if ( stage ) {
 				if ( this.$stage !== stage ) {
 					this.$stage = stage;
-					this.$bubble.dispatchEvent( new $Event( Event.ADDED_TO_STAGE ) );
+					if ( this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
+						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
+					}
 				}
 			} else {
 				this.$stage = null;

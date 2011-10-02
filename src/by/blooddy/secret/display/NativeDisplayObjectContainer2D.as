@@ -55,7 +55,9 @@ package by.blooddy.secret.display {
 			if ( this.$parent ) { // мы потеряли СТАРОГО папу
 				this.$dispatchEventFunction( new $Event( Event.REMOVED, true ) );
 				if ( this.$stage ) {
-					this.$bubble.dispatchEvent( new $Event( Event.REMOVED_FROM_STAGE ) );
+					if ( this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
+						this.$bubble.dispatchEvent( new Event( Event.REMOVED_FROM_STAGE ) );
+					}
 					for each ( child in this._list ) {
 						child.$setStage( null );
 					}
@@ -67,7 +69,9 @@ package by.blooddy.secret.display {
 					this.$parent = parent;
 					this.$dispatchEventFunction( new $Event( Event.ADDED, true ) );
 					if ( this.$stage ) {
-						this.$bubble.dispatchEvent( new $Event( Event.ADDED_TO_STAGE ) );
+						if ( this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
+							this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
+						}
 						for each ( child in this._list ) {
 							child.$setStage( this.$stage );
 						}
@@ -82,7 +86,9 @@ package by.blooddy.secret.display {
 		$internal override function $setStage(stage:Stage2D):void {
 			var child:DisplayObject2D;
 			if ( this.$stage ) {
-				this.$bubble.dispatchEvent( new $Event( Event.REMOVED_FROM_STAGE ) );
+				if ( this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
+					this.$bubble.dispatchEvent( new Event( Event.REMOVED_FROM_STAGE ) );
+				}
 				for each ( child in this._list ) {
 					child.$setStage( null );
 				}
@@ -90,7 +96,9 @@ package by.blooddy.secret.display {
 			if ( stage ) {
 				if ( this.$stage !== stage ) {
 					this.$stage = stage;
-					this.$bubble.dispatchEvent( new $Event( Event.ADDED_TO_STAGE ) );
+					if ( this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
+						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
+					}
 					for each ( child in this._list ) {
 						child.$setStage( this.$stage );
 					}
