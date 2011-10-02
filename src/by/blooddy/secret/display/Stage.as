@@ -7,6 +7,9 @@
 package by.blooddy.secret.display {
 
 	import flash.errors.IllegalOperationError;
+	import flash.events.EventDispatcher;
+	import by.blooddy.secret.geom.Transform;
+	import flash.geom.Rectangle;
 
 	use namespace $internal;
 
@@ -96,6 +99,102 @@ package by.blooddy.secret.display {
 		
 		*/
 		
+		public override function set name(value:String):void{
+			Error.throwError( IllegalOperationError, 2071 );
+		}
+
+//		public override function set mask(value:DisplayObject):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set visible(value:Boolean):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set x(value:Number):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set y(value:Number):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set z(value:Number):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set scaleX(value:Number):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set scaleY(value:Number):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set scaleZ(value:Number):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set rotation(value:Number):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set rotationX(value:Number):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set rotationY(value:Number):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set rotationZ(value:Number):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set alpha(value:Number):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set cacheAsBitmap(value:Boolean):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set opaqueBackground(value:Object):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set scrollRect(value:Rectangle):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set filters(value:Array):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set blendMode(value:String):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+
+		public override function set transform(value:Transform):void{
+			Error.throwError( IllegalOperationError, 2071 );
+		}
+
+//		public override function set tabEnabled(value:Boolean):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set tabIndex(value:int):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set focusRect(value:Object):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+//
+//		public override function set mouseEnabled(value:Boolean):void{
+//			Error.throwError( IllegalOperationError, 2071 );
+//		}
+
 		//--------------------------------------------------------------------------
 		//
 		//  Methods

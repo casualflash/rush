@@ -37,6 +37,8 @@ package by.blooddy.secret.events {
 		
 		public static const EXIT_FRAME:String =			flash.events.Event.EXIT_FRAME;
 		
+		public static const FRAME_CONSTRUCTED:String =	flash.events.Event.FRAME_CONSTRUCTED;
+		
 		public static const RENDER:String =				flash.events.Event.RENDER;
 		
 		//--------------------------------------------------------------------------

@@ -5,7 +5,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 package by.blooddy.secret.display {
-	
+
+	[ExcludeClass]
+	[Exclude( kind="namespace", name="$internal" )]
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0

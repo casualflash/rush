@@ -9,7 +9,9 @@ package by.blooddy.secret.display {
 	import avmplus.getQualifiedSuperclassName;
 	
 	import by.blooddy.secret.events.Event;
+	import by.blooddy.secret.geom.Transform;
 	
+	import flash.display.Shape;
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -34,15 +36,14 @@ package by.blooddy.secret.display {
 
 	[Event( name="exitFrame", type="by.blooddy.secret.events.Event" )]
 
+	[Event( name="frameConstructed", type="by.blooddy.secret.events.Event" )]
+	
 	[Event( name="render", type="by.blooddy.secret.events.Event" )]
 
 	/*
 	
 	TODO
 	
-	enterFrame
-	exitFrame
-	frameConstructed?
 	render
 	
 	*/
@@ -56,6 +57,25 @@ package by.blooddy.secret.display {
 	 */
 	public class DisplayObject implements IEventDispatcher {
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Class variables
+		//
+		//--------------------------------------------------------------------------
+
+		/**
+		 * @private
+		 */
+		private static const _BROADCASTER:Shape = new Shape();
+
+		/**
+		 * @private
+		 */
+		private static const _BROADCAST_EVENTS:Object = new Object();
+		_BROADCAST_EVENTS[ by.blooddy.secret.events.Event.ENTER_FRAME ] = true;
+		_BROADCAST_EVENTS[ by.blooddy.secret.events.Event.EXIT_FRAME ] = true;
+		_BROADCAST_EVENTS[ by.blooddy.secret.events.Event.FRAME_CONSTRUCTED ] = true;
+
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
@@ -187,7 +207,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		private var _name:String;
+		$internal var _name:String;
 		
 		public function get name():String {
 			return this._name;
@@ -201,6 +221,14 @@ package by.blooddy.secret.display {
 			this._name = value;
 		}
 		
+		//----------------------------------
+		//  name
+		//----------------------------------
+		
+		public function set transform(value:Transform):void{
+			Error.throwError( IllegalOperationError, 2071 );
+		}
+
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
@@ -208,23 +236,27 @@ package by.blooddy.secret.display {
 		//--------------------------------------------------------------------------
 
 		public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
-			// TODO: broadcast events
 			if ( useCapture ) {
 				if ( !this._capture ) this._capture = new EventDispatcher( this );
 				this._capture.addEventListener( type, listener, true, priority, useWeakReference );
 			} else {
+				if ( type in _BROADCAST_EVENTS && !this._bubble.hasEventListener( type ) ) {
+					_BROADCASTER.addEventListener( type, this._bubble.dispatchEvent, false, 0, true );
+				}
 				this._bubble.addEventListener( type, listener, false, priority, useWeakReference );
 			}
 		}
 
 		public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false):void {
-			// TODO: broadcast events
 			if ( useCapture ) {
 				if ( this._capture ) {
 					this._capture.removeEventListener( type, listener, true );
 				}
 			} else {
 				this._bubble.removeEventListener( type, listener, false );
+				if ( type in _BROADCAST_EVENTS && this._bubble.hasEventListener( type ) ) {
+					_BROADCASTER.removeEventListener( type, this._bubble.dispatchEvent );
+				}
 			}
 		}
 
