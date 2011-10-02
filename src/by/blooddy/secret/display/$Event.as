@@ -6,20 +6,10 @@
 
 package by.blooddy.secret.display {
 	
-	import avmplus.getQualifiedClassName;
-	
-	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 
-	//--------------------------------------
-	//  Excluded APIs
-	//--------------------------------------
-	
-	[Exclude( kind="property", name="$stopped" )]
-	[Exclude( kind="property", name="$canceled" )]
-	[Exclude( kind="property", name="$target" )]
-	[Exclude( kind="property", name="$eventPhase" )]
-	
+	use namespace $internal;
+
 	[ExcludeClass]
 	/**
 	 * @private
@@ -27,17 +17,9 @@ package by.blooddy.secret.display {
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 19:44:49
+	 * @created					02.10.2011 20:16:50
 	 */
-	public class NativeEvent extends Event implements INativeEvent {
-		
-		//--------------------------------------------------------------------------
-		//
-		//  Namespaces
-		//
-		//--------------------------------------------------------------------------
-		
-		use namespace $internal;
+	internal final class $Event extends Event implements INativeEvent {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -46,18 +28,10 @@ package by.blooddy.secret.display {
 		//--------------------------------------------------------------------------
 		
 		/**
-		 * @private
-		 * Constructor.
-		 * 
-		 * @param	type
-		 * @param	bubbles
-		 * @param	cancelable
+		 * Constructor
 		 */
-		public function NativeEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+		public function $Event(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
 			super( type, bubbles, cancelable );
-			if ( !( this is NativeEvent ) ) {
-				Error.throwError( IllegalOperationError, 2012, getQualifiedClassName( this ) );
-			}
 		}
 		
 		//--------------------------------------------------------------------------
@@ -65,23 +39,23 @@ package by.blooddy.secret.display {
 		//  Variables
 		//
 		//--------------------------------------------------------------------------
-
+		
 		/**
 		 * @private
 		 */
 		$internal var $stopped:Boolean = false;
-
+		
 		/**
 		 * @private
 		 */
 		$internal var $canceled:Boolean = false;
-
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Overriden properties: Event
 		//
 		//--------------------------------------------------------------------------
-
+		
 		//----------------------------------
 		//  target
 		//----------------------------------
@@ -125,15 +99,6 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		public override function formatToString(className:String, ...args):String {
-			if ( !className ) className = getQualifiedClassName( this );
-			args.unshift( className );
-			return super.formatToString.apply( this, args );
-		}
-		
-		/**
-		 * @private
-		 */
 		public override function stopImmediatePropagation():void {
 			super.stopImmediatePropagation();
 			this.$stopped = true;
@@ -164,17 +129,16 @@ package by.blooddy.secret.display {
 		 * @private
 		 */
 		public override function clone():Event {
-			var c:Class = ( this as Object ).constructor as Class;
-			return new c( super.type, super.bubbles, super.cancelable );
+			return new $Event( super.type, super.bubbles, super.cancelable );
 		}
 		
 		/**
 		 * @private
 		 */
 		public override function toString():String {
-			return this.formatToString( null, 'type', 'bubbles', 'cancelable' );
+			return super.formatToString( 'Event', 'type', 'bubbles', 'cancelable' );
 		}
 		
 	}
-		
+	
 }

@@ -6,8 +6,6 @@
 
 package by.blooddy.secret.display {
 
-	import by.blooddy.secret.events.Event2D;
-	
 	import flash.events.Event;
 
 	use namespace $internal;
@@ -55,9 +53,9 @@ package by.blooddy.secret.display {
 		$internal override function $setParent(parent:NativeDisplayObjectContainer2D):void {
 			var child:DisplayObject2D;
 			if ( this.$parent ) { // мы потеряли СТАРОГО папу
-				this.$dispatchEventFunction( new Event2D( Event.REMOVED, true ) );
+				this.$dispatchEventFunction( new $Event( Event.REMOVED, true ) );
 				if ( this.$stage ) {
-					this.$bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
+					this.$bubble.dispatchEvent( new $Event( Event.REMOVED_FROM_STAGE ) );
 					for each ( child in this._list ) {
 						child.$setStage( null );
 					}
@@ -67,9 +65,9 @@ package by.blooddy.secret.display {
 				if ( this.$parent !== parent ) {
 					this.$stage = ( parent as DisplayObject2D ).$stage;
 					this.$parent = parent;
-					this.$dispatchEventFunction( new Event2D( Event.ADDED, true ) );
+					this.$dispatchEventFunction( new $Event( Event.ADDED, true ) );
 					if ( this.$stage ) {
-						this.$bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
+						this.$bubble.dispatchEvent( new $Event( Event.ADDED_TO_STAGE ) );
 						for each ( child in this._list ) {
 							child.$setStage( this.$stage );
 						}
@@ -84,7 +82,7 @@ package by.blooddy.secret.display {
 		$internal override function $setStage(stage:Stage2D):void {
 			var child:DisplayObject2D;
 			if ( this.$stage ) {
-				this.$bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
+				this.$bubble.dispatchEvent( new $Event( Event.REMOVED_FROM_STAGE ) );
 				for each ( child in this._list ) {
 					child.$setStage( null );
 				}
@@ -92,7 +90,7 @@ package by.blooddy.secret.display {
 			if ( stage ) {
 				if ( this.$stage !== stage ) {
 					this.$stage = stage;
-					this.$bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
+					this.$bubble.dispatchEvent( new $Event( Event.ADDED_TO_STAGE ) );
 					for each ( child in this._list ) {
 						child.$setStage( this.$stage );
 					}

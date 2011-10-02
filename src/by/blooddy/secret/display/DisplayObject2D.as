@@ -8,7 +8,6 @@ package by.blooddy.secret.display {
 	
 	import avmplus.getQualifiedSuperclassName;
 	
-	import by.blooddy.secret.events.Event2D;
 	import by.blooddy.secret.geom.Transform;
 	
 	import flash.display.Shape;
@@ -75,6 +74,11 @@ package by.blooddy.secret.display {
 		_BROADCAST_EVENTS[ Event.ENTER_FRAME ] = true;
 		_BROADCAST_EVENTS[ Event.EXIT_FRAME ] = true;
 		_BROADCAST_EVENTS[ Event.FRAME_CONSTRUCTED ] = true;
+
+		/**
+		 * @private
+		 */
+		private static const _STOPPED_NAME:QName = new QName( $internal, '$stopped' );
 
 		//--------------------------------------------------------------------------
 		//
@@ -275,8 +279,11 @@ package by.blooddy.secret.display {
 
 		public function dispatchEvent(event:Event):Boolean {
 			if ( event.bubbles ) {
-				if ( !( event is NativeEvent ) ) throw new ArgumentError();
-				return this.$dispatchEventFunction( event as NativeEvent );
+				if ( !( event is INativeEvent ) ) {
+					event = EventFactory.getEvent( event );
+					if ( !event ) throw new ArgumentError();
+				}
+				return this.$dispatchEventFunction( event );
 			} else {
 				return this.$bubble.dispatchEvent( event );
 			}
@@ -309,18 +316,18 @@ package by.blooddy.secret.display {
 		 */
 		$internal function $setParent(parent:NativeDisplayObjectContainer2D):void {
 			if ( this.$parent ) {
-				this.$dispatchEventFunction( new Event2D( Event.REMOVED, true ) );
+				this.$dispatchEventFunction( new $Event( Event.REMOVED, true ) );
 				if ( this.$stage ) {
-					this.$bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
+					this.$bubble.dispatchEvent( new $Event( Event.REMOVED_FROM_STAGE ) );
 				}
 			}
 			if ( parent ) {
 				if ( this.$parent !== parent ) {
 					this.$stage = ( parent as DisplayObject2D ).$stage;
 					this.$parent = parent;
-					this.$dispatchEventFunction( new Event2D( Event.ADDED, true ) );
+					this.$dispatchEventFunction( new $Event( Event.ADDED, true ) );
 					if ( this.$stage ) {
-						this.$bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
+						this.$bubble.dispatchEvent( new $Event( Event.ADDED_TO_STAGE ) );
 					}
 				}
 			} else {
@@ -334,12 +341,12 @@ package by.blooddy.secret.display {
 		 */
 		$internal function $setStage(stage:Stage2D):void {
 			if ( this.$stage ) {
-				this.$bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
+				this.$bubble.dispatchEvent( new $Event( Event.REMOVED_FROM_STAGE ) );
 			}
 			if ( stage ) {
 				if ( this.$stage !== stage ) {
 					this.$stage = stage;
-					this.$bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
+					this.$bubble.dispatchEvent( new $Event( Event.ADDED_TO_STAGE ) );
 				}
 			} else {
 				this.$stage = null;
@@ -349,7 +356,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal function $dispatchEventFunction(event:NativeEvent):Boolean {
+		$internal function $dispatchEventFunction(event:Event):Boolean {
 			var canceled:Boolean = false;
 			var target:DisplayObject2D;
 			if ( !this._parents ) {
@@ -362,17 +369,17 @@ package by.blooddy.secret.display {
 			}
 			// надо отдиспатчить капчу
 			var type:String = event.type;
-			var e:NativeEvent;
+			var e:Object;
 			var i:int;
 			var l:uint = this._parents.length;
 			for ( i=l-1; i>=0; --i ) {
 				target = this._parents[ i ];
 				if ( target.$capture && target.$capture.hasEventListener( type ) ) {
-					e = event.clone() as NativeEvent;
+					e = event.clone();
 					e.$eventPhase = EventPhase.CAPTURING_PHASE;
 					e.$target = this;
 					e.$canceled = canceled;
-					CONTAINER.$event = e;
+					CONTAINER.$event = e as Event;
 					target.$capture.dispatchEvent( CONTAINER );
 					canceled &&= e.$canceled;
 					if ( e.$stopped ) {
@@ -382,17 +389,17 @@ package by.blooddy.secret.display {
 			}
 			if ( this.$bubble.hasEventListener( event.type ) ) {
 				canceled = !this.$bubble.dispatchEvent( event );
-				if ( event.$stopped ) {
+				if ( event[ _STOPPED_NAME ] ) {
 					return canceled;
 				}
 			}
 			for each ( target in this._parents ) {
 				if ( target.hasEventListener( type ) ) {
-					e = event.clone() as NativeEvent;
+					e = event.clone();
 					e.$eventPhase = EventPhase.BUBBLING_PHASE;
 					e.$target = this;
 					e.$canceled = canceled;
-					CONTAINER.$event = e;
+					CONTAINER.$event = e as Event;
 					target.$bubble.dispatchEvent( CONTAINER );
 					canceled &&= e.$canceled;
 					if ( e.$stopped ) {
