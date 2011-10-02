@@ -92,7 +92,7 @@ package by.blooddy.secret.display {
 			if ( ( this as Object ).constructor === DisplayObject2D ) {
 				Error.throwError( IllegalOperationError, 2012, getQualifiedSuperclassName( this ) );
 			}
-			this._bubble = new EventDispatcher( this );
+			this.$bubble = new EventDispatcher( this );
 		}
 
 		//--------------------------------------------------------------------------
@@ -104,12 +104,12 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal var _bubble:EventDispatcher;
+		$internal var $bubble:EventDispatcher;
 		
 		/**
 		 * @private
 		 */
-		$internal var _capture:EventDispatcher;
+		$internal var $capture:EventDispatcher;
 
 		/**
 		 * @private
@@ -168,15 +168,15 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal var _parent:NativeDisplayObjectContainer2D;
+		$internal var $parent:NativeDisplayObjectContainer2D;
 
 		/**
 		 * @private
 		 */
-		$internal var _bubbleParent:NativeDisplayObjectContainer2D;
+		$internal var $bubbleParent:NativeDisplayObjectContainer2D;
 
 		public function get parent():DisplayObjectContainer2D {
-			return this._parent as DisplayObjectContainer2D;
+			return this.$parent as DisplayObjectContainer2D;
 		}
 
 		//----------------------------------
@@ -186,10 +186,10 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal var _stage:Stage2D;
+		$internal var $stage:Stage2D;
 
 		public function get stage():Stage2D {
-			return this._stage;
+			return this.$stage;
 		}
 
 		//----------------------------------
@@ -197,7 +197,7 @@ package by.blooddy.secret.display {
 		//----------------------------------
 		
 		public function get root():DisplayObjectContainer2D {
-			return this._stage;
+			return this.$stage;
 		}
 		
 		//----------------------------------
@@ -207,18 +207,18 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal var _name:String;
+		$internal var $name:String;
 		
 		public function get name():String {
-			return this._name;
+			return this.$name;
 		}
 		
 		/**
 		 * @private
 		 */
 		public function set name(value:String):void {
-			if ( this._name == value ) return;
-			this._name = value;
+			if ( this.$name == value ) return;
+			this.$name = value;
 		}
 		
 		//----------------------------------
@@ -237,43 +237,43 @@ package by.blooddy.secret.display {
 
 		public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
 			if ( useCapture ) {
-				if ( !this._capture ) this._capture = new EventDispatcher( this );
-				this._capture.addEventListener( type, listener, true, priority, useWeakReference );
+				if ( !this.$capture ) this.$capture = new EventDispatcher( this );
+				this.$capture.addEventListener( type, listener, true, priority, useWeakReference );
 			} else {
-				if ( type in _BROADCAST_EVENTS && !this._bubble.hasEventListener( type ) ) {
-					_BROADCASTER.addEventListener( type, this._bubble.dispatchEvent, false, 0, true );
+				if ( type in _BROADCAST_EVENTS && !this.$bubble.hasEventListener( type ) ) {
+					_BROADCASTER.addEventListener( type, this.$bubble.dispatchEvent, false, 0, true );
 				}
-				this._bubble.addEventListener( type, listener, false, priority, useWeakReference );
+				this.$bubble.addEventListener( type, listener, false, priority, useWeakReference );
 			}
 		}
 
 		public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false):void {
 			if ( useCapture ) {
-				if ( this._capture ) {
-					this._capture.removeEventListener( type, listener, true );
+				if ( this.$capture ) {
+					this.$capture.removeEventListener( type, listener, true );
 				}
 			} else {
-				this._bubble.removeEventListener( type, listener, false );
-				if ( type in _BROADCAST_EVENTS && this._bubble.hasEventListener( type ) ) {
-					_BROADCASTER.removeEventListener( type, this._bubble.dispatchEvent );
+				this.$bubble.removeEventListener( type, listener, false );
+				if ( type in _BROADCAST_EVENTS && this.$bubble.hasEventListener( type ) ) {
+					_BROADCASTER.removeEventListener( type, this.$bubble.dispatchEvent );
 				}
 			}
 		}
 
 		public function hasEventListener(type:String):Boolean {
-			return this._bubble.hasEventListener( type );
+			return this.$bubble.hasEventListener( type );
 		}
 
 		public function willTrigger(type:String):Boolean {
-			if ( this._bubble.hasEventListener( type ) || ( this._capture && this._capture.hasEventListener( type ) ) ) {
+			if ( this.$bubble.hasEventListener( type ) || ( this.$capture && this.$capture.hasEventListener( type ) ) ) {
 				return true;
 			}
-			var target:DisplayObject2D = this._bubbleParent;
+			var target:DisplayObject2D = this.$bubbleParent;
 			while ( target ) {
-				if ( target.hasEventListener( type ) || ( target._capture && target._capture.hasEventListener( type ) ) ) {
+				if ( target.hasEventListener( type ) || ( target.$capture && target.$capture.hasEventListener( type ) ) ) {
 					return true;
 				}
-				target = target._bubbleParent;
+				target = target.$bubbleParent;
 			}
 			return false;
 		}
@@ -283,7 +283,7 @@ package by.blooddy.secret.display {
 				if ( !( event is NativeEvent ) ) throw new ArgumentError();
 				return this.$dispatchEventFunction( event as NativeEvent );
 			} else {
-				return this._bubble.dispatchEvent( event );
+				return this.$bubble.dispatchEvent( event );
 			}
 		}
 
@@ -313,26 +313,26 @@ package by.blooddy.secret.display {
 		 * @private
 		 */
 		$internal function $setParent(parent:NativeDisplayObjectContainer2D):void {
-			if ( this._parent ) {
-				this._bubbleParent = this._parent;
+			if ( this.$parent ) {
+				this.$bubbleParent = this.$parent;
 				this.$dispatchEventFunction( new Event2D( Event.REMOVED, true ) );
-				if ( this._stage ) {
-					this._bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
+				if ( this.$stage ) {
+					this.$bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
 				}
 			}
 			if ( parent ) {
-				if ( this._parent !== parent ) {
-					this._stage = ( parent as DisplayObject2D )._stage;
-					this._parent = parent;
-					this._bubbleParent = parent;
+				if ( this.$parent !== parent ) {
+					this.$stage = ( parent as DisplayObject2D ).$stage;
+					this.$parent = parent;
+					this.$bubbleParent = parent;
 					this.$dispatchEventFunction( new Event2D( Event.ADDED, true ) );
-					if ( this._stage ) {
-						this._bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
+					if ( this.$stage ) {
+						this.$bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
 					}
 				}
 			} else {
-				this._parent = null;
-				this._stage = null;
+				this.$parent = null;
+				this.$stage = null;
 			}
 		}
 
@@ -340,16 +340,16 @@ package by.blooddy.secret.display {
 		 * @private
 		 */
 		$internal function $setStage(stage:Stage2D):void {
-			if ( this._stage ) {
-				this._bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
+			if ( this.$stage ) {
+				this.$bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
 			}
 			if ( stage ) {
-				if ( this._stage !== stage ) {
-					this._stage = stage;
-					this._bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
+				if ( this.$stage !== stage ) {
+					this.$stage = stage;
+					this.$bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
 				}
 			} else {
-				this._stage = null;
+				this.$stage = null;
 			}
 		}
 		
@@ -361,10 +361,10 @@ package by.blooddy.secret.display {
 			var target:DisplayObject2D;
 			if ( !this._parents ) {
 				this._parents = new Vector.<DisplayObject2D>();
-				target = this._bubbleParent;
+				target = this.$bubbleParent;
 				while ( target ) {
 					this._parents.push( target );
-					target = target._parent;
+					target = target.$parent;
 				}
 			}
 			// надо отдиспатчить капчу
@@ -374,21 +374,21 @@ package by.blooddy.secret.display {
 			var l:uint = this._parents.length;
 			for ( i=l-1; i>=0; --i ) {
 				target = this._parents[ i ];
-				if ( target._capture && target._capture.hasEventListener( type ) ) {
+				if ( target.$capture && target.$capture.hasEventListener( type ) ) {
 					e = event.clone() as NativeEvent;
 					e.$eventPhase = EventPhase.CAPTURING_PHASE;
 					e.$target = this;
 					e.$canceled = canceled;
 					CONTAINER.$event = e;
-					target._capture.dispatchEvent( CONTAINER );
+					target.$capture.dispatchEvent( CONTAINER );
 					canceled &&= e.$canceled;
 					if ( e.$stopped ) {
 						return canceled;
 					}
 				}
 			}
-			if ( this._bubble.hasEventListener( event.type ) ) {
-				canceled = !this._bubble.dispatchEvent( event );
+			if ( this.$bubble.hasEventListener( event.type ) ) {
+				canceled = !this.$bubble.dispatchEvent( event );
 				if ( event.$stopped ) {
 					return canceled;
 				}
@@ -400,7 +400,7 @@ package by.blooddy.secret.display {
 					e.$target = this;
 					e.$canceled = canceled;
 					CONTAINER.$event = e;
-					target._bubble.dispatchEvent( CONTAINER );
+					target.$bubble.dispatchEvent( CONTAINER );
 					canceled &&= e.$canceled;
 					if ( e.$stopped ) {
 						return canceled;

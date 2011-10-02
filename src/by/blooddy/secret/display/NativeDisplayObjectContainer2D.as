@@ -54,53 +54,53 @@ package by.blooddy.secret.display {
 
 		$internal override function $setParent(parent:NativeDisplayObjectContainer2D):void {
 			var child:DisplayObject2D;
-			if ( this._parent ) { // мы потеряли СТАРОГО папу
-				this._bubbleParent = this._parent;
+			if ( this.$parent ) { // мы потеряли СТАРОГО папу
+				this.$bubbleParent = this.$parent;
 				this.$dispatchEventFunction( new Event2D( Event.REMOVED, true ) );
-				if ( this._stage ) {
-					this._bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
+				if ( this.$stage ) {
+					this.$bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
 					for each ( child in this._list ) {
 						child.$setStage( null );
 					}
 				}
 			}
 			if ( parent ) {
-				if ( this._parent !== parent ) {
-					this._stage = ( parent as DisplayObject2D )._stage;
-					this._parent = parent;
-					this._bubbleParent = parent;
+				if ( this.$parent !== parent ) {
+					this.$stage = ( parent as DisplayObject2D ).$stage;
+					this.$parent = parent;
+					this.$bubbleParent = parent;
 					this.$dispatchEventFunction( new Event2D( Event.ADDED, true ) );
-					if ( this._stage ) {
-						this._bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
+					if ( this.$stage ) {
+						this.$bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
 						for each ( child in this._list ) {
-							child.$setStage( this._stage );
+							child.$setStage( this.$stage );
 						}
 					}
 				}
 			} else {
-				this._stage = null;
-				this._parent = null;
+				this.$stage = null;
+				this.$parent = null;
 			}
 		}
 		
 		$internal override function $setStage(stage:Stage2D):void {
 			var child:DisplayObject2D;
-			if ( this._stage ) {
-				this._bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
+			if ( this.$stage ) {
+				this.$bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
 				for each ( child in this._list ) {
 					child.$setStage( null );
 				}
 			}
 			if ( stage ) {
-				if ( this._stage !== stage ) {
-					this._stage = stage;
-					this._bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
+				if ( this.$stage !== stage ) {
+					this.$stage = stage;
+					this.$bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
 					for each ( child in this._list ) {
-						child.$setStage( this._stage );
+						child.$setStage( this.$stage );
 					}
 				}
 			} else {
-				this._stage = null;
+				this.$stage = null;
 			}
 		}
 
@@ -115,10 +115,10 @@ package by.blooddy.secret.display {
 			// проверим не мыли это?
 			if ( child === this ) Error.throwError( ArgumentError, 2024 );
 			// если есть родитель, то надо его отуда удалить
-			if ( child._parent === this ) {
+			if ( child.$parent === this ) {
 				this.$setChildIndex( child, index, false );
 			} else {
-				var parent:NativeDisplayObjectContainer2D = child._parent;
+				var parent:NativeDisplayObjectContainer2D = child.$parent;
 				if ( parent ) {
 					parent.$removeChildAt(
 						parent.$getChildIndex(
@@ -164,7 +164,7 @@ package by.blooddy.secret.display {
 			// проверим нашу пренадлежность, вдруг зацикливание
 			do {
 				if ( child === this ) return true;
-			} while ( child = child._parent );
+			} while ( child = child.$parent );
 			return false;
 		}
 
@@ -183,7 +183,7 @@ package by.blooddy.secret.display {
 		$internal function $getChildIndex(child:DisplayObject2D, strict:Boolean=true):int {
 			if ( strict ) {
 				// проверяем мы ли родитель
-				if ( !child || child._parent !== this ) Error.throwError( ArgumentError, 2025 );
+				if ( !child || child.$parent !== this ) Error.throwError( ArgumentError, 2025 );
 			}
 			// ищем
 			return this._list.indexOf( child );

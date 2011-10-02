@@ -102,7 +102,7 @@ package by.blooddy.secret.display {
 		public function getChildByName(name:String):DisplayObject2D {
 			// проверяем мы ли родитель
 			for each ( var child:DisplayObject2D in this._list ) {
-				if ( child._name === name ) return child;
+				if ( child.$name === name ) return child;
 			}
 			return null;
 		}

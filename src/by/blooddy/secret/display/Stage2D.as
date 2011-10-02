@@ -6,10 +6,9 @@
 
 package by.blooddy.secret.display {
 
-	import flash.errors.IllegalOperationError;
-	import flash.events.EventDispatcher;
 	import by.blooddy.secret.geom.Transform;
-	import flash.geom.Rectangle;
+	
+	import flash.errors.IllegalOperationError;
 
 	use namespace $internal;
 
@@ -46,7 +45,7 @@ package by.blooddy.secret.display {
 		 */
 		public function Stage2D() {
 			super();
-			this._stage = this;
+			this.$stage = this;
 		}
 		
 		//--------------------------------------------------------------------------
