@@ -8,11 +8,11 @@ package by.blooddy.secret.display {
 	
 	import avmplus.getQualifiedSuperclassName;
 	
+	import by.blooddy.secret.events.Event;
+	
 	import flash.errors.IllegalOperationError;
-	import flash.events.EventDispatcher;
-	import flash.system.ApplicationDomain;
-	import flash.utils.Dictionary;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.EventPhase;
 	import flash.events.IEventDispatcher;
 
@@ -26,9 +26,7 @@ package by.blooddy.secret.display {
 	
 	TODO
 	
-	added
 	addedToStage
-	removed
 	removedFromStage
 	
 	BROADCSTED:
@@ -61,7 +59,7 @@ package by.blooddy.secret.display {
 		public function DisplayObject() {
 			super();
 			// TODO: сделать проверку на конкретный класс
-			if ( !( ( this as Object ).constructor === DisplayObject ) ) {
+			if ( ( this as Object ).constructor === DisplayObject ) {
 				Error.throwError( IllegalOperationError, 2012, getQualifiedSuperclassName( this ) );
 			}
 			this._bubble = new EventDispatcher( this );
@@ -76,12 +74,12 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		private var _bubble:EventDispatcher;
+		$internal var _bubble:EventDispatcher;
 		
 		/**
 		 * @private
 		 */
-		private var _capture:EventDispatcher;
+		$internal var _capture:EventDispatcher;
 
 		/**
 		 * @private
@@ -133,31 +131,64 @@ package by.blooddy.secret.display {
 
 		*/
 
+		//----------------------------------
+		//  parent
+		//----------------------------------
+		
 		/**
 		 * @private
 		 */
-		private var _parent:NativeDisplayObjectContainer;
+		$internal var _parent:NativeDisplayObjectContainer;
 
 		/**
 		 * @private
 		 */
-		private var _bubbleParent:NativeDisplayObjectContainer;
+		$internal var _bubbleParent:NativeDisplayObjectContainer;
 
 		public function get parent():DisplayObjectContainer {
 			return this._parent as DisplayObjectContainer;
 		}
 
+		//----------------------------------
+		//  stage
+		//----------------------------------
+		
 		/**
 		 * @private
 		 */
-		private var _stage:Stage;
+		$internal var _stage:Stage;
 
 		public function get stage():Stage {
 			return this._stage;
 		}
 
+		//----------------------------------
+		//  root
+		//----------------------------------
+		
 		public function get root():DisplayObjectContainer {
 			return this._stage;
+		}
+		
+		//----------------------------------
+		//  name
+		//----------------------------------
+		
+		/**
+		 * @private
+		 */
+		private var _name:String;
+		
+		public function get name():String {
+			return this._name;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set name(value:String):void {
+			if ( this._name == value ) return;
+			this._name = value;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -205,10 +236,10 @@ package by.blooddy.secret.display {
 			return false;
 		}
 
-		public function dispatchEvent(event:Event):Boolean {
+		public function dispatchEvent(event:flash.events.Event):Boolean {
 			if ( event.bubbles ) {
 				if ( !( event is NativeEvent ) ) throw new ArgumentError();
-				return this.dispatchEventFunction( event as NativeEvent );
+				return this.$dispatchEventFunction( event as NativeEvent );
 			} else {
 				return this._bubble.dispatchEvent( event );
 			}
@@ -229,17 +260,61 @@ package by.blooddy.secret.display {
 		hitTestObject
 		
 		*/
-		
+
 		//--------------------------------------------------------------------------
 		//
-		//  Private methods
+		//  Internal methods
 		//
 		//--------------------------------------------------------------------------
+
+		/**
+		 * @private
+		 */
+		$internal function $setParent(parent:NativeDisplayObjectContainer):void {
+			if ( this._parent ) {
+				this._bubbleParent = this._parent;
+				this.$dispatchEventFunction( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.REMOVED, true ) );
+				if ( this._stage ) {
+					this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.REMOVED_FROM_STAGE ) );
+				}
+			}
+			if ( parent ) {
+				if ( this._parent !== parent ) {
+					this._stage = ( parent as DisplayObject )._stage;
+					this._parent = parent;
+					this._bubbleParent = parent;
+					this.$dispatchEventFunction( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.ADDED, true ) );
+					if ( this._stage ) {
+						this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.ADDED_TO_STAGE ) );
+					}
+				}
+			} else {
+				this._parent = null;
+				this._stage = null;
+			}
+		}
+
+		/**
+		 * @private
+		 */
+		$internal function $setStage(stage:Stage):void {
+			if ( this._stage ) {
+				this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.REMOVED_FROM_STAGE ) );
+			}
+			if ( stage ) {
+				if ( this._stage !== stage ) {
+					this._stage = stage;
+					this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.ADDED_TO_STAGE ) );
+				}
+			} else {
+				this._stage = null;
+			}
+		}
 		
 		/**
 		 * @private
 		 */
-		private function dispatchEventFunction(event:NativeEvent):Boolean {
+		$internal function $dispatchEventFunction(event:NativeEvent):Boolean {
 			var canceled:Boolean = false;
 			var target:DisplayObject;
 			if ( !this._parents ) {
@@ -283,7 +358,7 @@ package by.blooddy.secret.display {
 					e.$target = this;
 					e.$canceled = canceled;
 					CONTAINER.$event = e;
-					target.dispatchEvent( CONTAINER );
+					target._bubble.dispatchEvent( CONTAINER );
 					canceled &&= e.$canceled;
 					if ( e.$stopped ) {
 						return canceled;

@@ -5,11 +5,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 package by.blooddy.secret.display {
-	
+
+	import flash.errors.IllegalOperationError;
+
+	use namespace $internal;
+
 	//--------------------------------------
 	//  Events
 	//--------------------------------------
-	
+
 	/*
 	
 	TODO
@@ -39,6 +43,7 @@ package by.blooddy.secret.display {
 		 */
 		public function Stage() {
 			super();
+			this._stage = this;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -104,6 +109,20 @@ package by.blooddy.secret.display {
 		invalidate
 		
 		*/
+
+		//--------------------------------------------------------------------------
+		//
+		//  Internal methods
+		//
+		//--------------------------------------------------------------------------
+
+		$internal override function $setParent(parent:NativeDisplayObjectContainer):void {
+			throw new IllegalOperationError();
+		}
+
+		$internal override function $setStage(stage:Stage):void {
+			throw new IllegalOperationError();
+		}
 
 	}
 	
