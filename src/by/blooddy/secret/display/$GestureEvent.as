@@ -7,34 +7,30 @@
 package by.blooddy.secret.display {
 	
 	import flash.events.Event;
+	import flash.events.GestureEvent;
 
 	use namespace $internal;
 
-	[ExcludeClass]
 	/**
-	 * обёртка вокруг стандартного события флэша
-	 * 
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					02.10.2011 20:16:50
-	 * 
-	 * @see						flash.events.Event
+	 * @created					02.10.2011 23:59:55
 	 */
-	internal final class $Event extends Event implements INativeEvent {
+	internal final class $GestureEvent extends GestureEvent implements INativeEvent {
 		
 		//--------------------------------------------------------------------------
 		//
 		//  Internal class methods
 		//
 		//--------------------------------------------------------------------------
-
+		
 		/**
 		 * @private
 		 */
-		$internal static function get(event:Event):$Event {
-			return new $Event( event.type, event.bubbles, event.cancelable );
+		$internal static function get(event:GestureEvent):$GestureEvent {
+			return new $GestureEvent( event.type, event.bubbles, event.cancelable, event.phase, event.localX, event.localY, event.ctrlKey, event.altKey, event.shiftKey );
 		}
 		
 		//--------------------------------------------------------------------------
@@ -46,8 +42,8 @@ package by.blooddy.secret.display {
 		/**
 		 * Constructor
 		 */
-		public function $Event(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
-			super( type, bubbles, cancelable );
+		public function $GestureEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false, phase:String=null, localX:Number=0, localY:Number=0, ctrlKey:Boolean=false, altKey:Boolean=false, shiftKey:Boolean=false) {
+			super( type, bubbles, cancelable, phase, localX, localY, ctrlKey, altKey, shiftKey );
 		}
 		
 		//--------------------------------------------------------------------------
@@ -145,7 +141,7 @@ package by.blooddy.secret.display {
 		 * @private
 		 */
 		public override function clone():Event {
-			return new $Event( super.type, super.bubbles, super.cancelable );
+			return new $GestureEvent( super.type, super.bubbles, super.cancelable, super.phase, super.localX, super.localY, super.ctrlKey, super.altKey, super.shiftKey );
 		}
 		
 	}

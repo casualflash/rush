@@ -8,7 +8,14 @@ package by.blooddy.secret.display {
 
 	import flash.events.Event;
 	import flash.utils.Dictionary;
-	
+	import flash.events.GestureEvent;
+	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
+	import flash.events.TransformGestureEvent;
+	import flash.events.PressAndTapGestureEvent;
+
+	use namespace $internal;
+
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
@@ -28,33 +35,25 @@ package by.blooddy.secret.display {
 		 * @private
 		 */
 		private static const _HASH:Dictionary = new Dictionary( true );
-		_HASH[ Event ] = get$Event;
+		_HASH[ Event ] =					$Event.get;
+		_HASH[ MouseEvent ] =				$MouseEvent.get;
+		_HASH[ TouchEvent ] =				$TouchEvent.get;
+		_HASH[ GestureEvent ] =				$GestureEvent.get;
+		_HASH[ TransformGestureEvent ] =	$TransformGestureEvent.get;
+		_HASH[ PressAndTapGestureEvent ] =	$PressAndTapGestureEvent.get;
 
 		//--------------------------------------------------------------------------
 		//
 		//  Class methods
 		//
 		//--------------------------------------------------------------------------
-		
+
 		public static function getEvent(event:Event):Event {
 			var c:Class = ( event as Object ).constructor;
 			if ( c in _HASH ) {
 				return _HASH[ c ]( event );
 			}
 			return null;
-		}
-		
-		//--------------------------------------------------------------------------
-		//
-		//  Private class methods
-		//
-		//--------------------------------------------------------------------------
-
-		/**
-		 * @private
-		 */
-		private static function get$Event(event:Event):$Event {
-			return new $Event( event.type, event.bubbles, event.cancelable );
 		}
 
 	}

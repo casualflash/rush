@@ -5,36 +5,33 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 package by.blooddy.secret.display {
-	
+
+	import flash.display.InteractiveObject;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 
 	use namespace $internal;
 
-	[ExcludeClass]
 	/**
-	 * обёртка вокруг стандартного события флэша
-	 * 
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					02.10.2011 20:16:50
-	 * 
-	 * @see						flash.events.Event
+	 * @created					02.10.2011 23:26:51
 	 */
-	internal final class $Event extends Event implements INativeEvent {
-		
+	internal final class $MouseEvent extends MouseEvent implements INativeEvent {
+
 		//--------------------------------------------------------------------------
 		//
 		//  Internal class methods
 		//
 		//--------------------------------------------------------------------------
-
+		
 		/**
 		 * @private
 		 */
-		$internal static function get(event:Event):$Event {
-			return new $Event( event.type, event.bubbles, event.cancelable );
+		$internal static function get(event:MouseEvent):$MouseEvent {
+			return new $MouseEvent( event.type, event.bubbles, event.cancelable, event.localX, event.localY, event.relatedObject, event.ctrlKey, event.altKey, event.shiftKey, event.buttonDown, event.delta );
 		}
 		
 		//--------------------------------------------------------------------------
@@ -42,14 +39,14 @@ package by.blooddy.secret.display {
 		//  Constructor
 		//
 		//--------------------------------------------------------------------------
-		
+
 		/**
 		 * Constructor
 		 */
-		public function $Event(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
-			super( type, bubbles, cancelable );
+		public function $MouseEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false, localX:Number=NaN, localY:Number=NaN, relatedObject:InteractiveObject=null, ctrlKey:Boolean=false, altKey:Boolean=false, shiftKey:Boolean=false, buttonDown:Boolean=false, delta:int=0) {
+			super( type, bubbles, cancelable, localX, localY, relatedObject, ctrlKey, altKey, shiftKey, buttonDown, delta );
 		}
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Variables
@@ -145,7 +142,7 @@ package by.blooddy.secret.display {
 		 * @private
 		 */
 		public override function clone():Event {
-			return new $Event( super.type, super.bubbles, super.cancelable );
+			return new $MouseEvent( super.type, super.bubbles, super.cancelable, super.localX, super.localY, super.relatedObject, super.ctrlKey, super.altKey, super.shiftKey, super.buttonDown, super.delta );
 		}
 		
 	}

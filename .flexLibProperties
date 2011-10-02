@@ -17,6 +17,11 @@
     <classEntry path="by.blooddy.secret.display.INativeEvent"/>
     <classEntry path="by.blooddy.secret.display.EventFactory"/>
     <classEntry path="by.blooddy.secret.display.$Event"/>
+    <classEntry path="by.blooddy.secret.display.$MouseEvent"/>
+    <classEntry path="by.blooddy.secret.display.$TouchEvent"/>
+    <classEntry path="by.blooddy.secret.display.$TransformGestureEvent"/>
+    <classEntry path="by.blooddy.secret.display.$PressAndTapGestureEvent"/>
+    <classEntry path="by.blooddy.secret.display.$GestureEvent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
