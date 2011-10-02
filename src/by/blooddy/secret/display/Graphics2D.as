@@ -4,62 +4,39 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.geom {
-	
+package by.blooddy.secret.display {
+
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 18:45:21
+	 * @created					03.10.2011 2:33:06
 	 */
-	public class Transform {
-		
+	public class Graphics2D {
+
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
 		//
 		//--------------------------------------------------------------------------
-		
+
 		/**
-		 * @private
 		 * Constructor
 		 */
-		public function Transform() {
+		public function Graphics2D() {
 			super();
 		}
-
-		//--------------------------------------------------------------------------
-		//
-		//  Properties
-		//
-		//--------------------------------------------------------------------------
-
-		/*
-		
-		TODO:
-		
-		colorTransform
-		concatenatedColorTransform?
-		matrix
-		concatenatedMatrix?
-		matrix3D?
-		perspectiveProjection?
-		pixelBounds
-		
-		*/
 
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
 		//
 		//--------------------------------------------------------------------------
-		
+
 		/*
 		
-		TODO
-		
-		getRelativeMatrix3D
+		TODO:
 		
 		*/
 

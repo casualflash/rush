@@ -11,7 +11,7 @@
     <classEntry path="by.blooddy.secret.display.NativeDisplayObjectContainer2D"/>
     <classEntry path="by.blooddy.secret.display.$internal"/>
     <classEntry path="by.blooddy.secret.display.Stage2D"/>
-    <classEntry path="by.blooddy.secret.geom.Transform"/>
+    <classEntry path="by.blooddy.secret.geom.Transform2D"/>
     <classEntry path="by.blooddy.secret.display.NativeEvent"/>
     <classEntry path="by.blooddy.secret.events.Event2D"/>
     <classEntry path="by.blooddy.secret.display.INativeEvent"/>
@@ -22,6 +22,8 @@
     <classEntry path="by.blooddy.secret.display.$TransformGestureEvent"/>
     <classEntry path="by.blooddy.secret.display.$PressAndTapGestureEvent"/>
     <classEntry path="by.blooddy.secret.display.$GestureEvent"/>
+    <classEntry path="by.blooddy.secret.display.Shape2D"/>
+    <classEntry path="by.blooddy.secret.display.Graphics2D"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

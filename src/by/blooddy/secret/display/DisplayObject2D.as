@@ -8,7 +8,7 @@ package by.blooddy.secret.display {
 	
 	import avmplus.getQualifiedClassName;
 	
-	import by.blooddy.secret.geom.Transform;
+	import by.blooddy.secret.geom.Transform2D;
 	
 	import flash.display.Shape;
 	import flash.errors.IllegalOperationError;
@@ -223,7 +223,7 @@ package by.blooddy.secret.display {
 		//  name
 		//----------------------------------
 		
-		public function set transform(value:Transform):void{
+		public function set transform(value:Transform2D):void{
 			Error.throwError( IllegalOperationError, 2071 );
 		}
 

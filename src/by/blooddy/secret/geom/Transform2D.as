@@ -4,16 +4,16 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.display {
+package by.blooddy.secret.geom {
 	
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 18:01:02
+	 * @created					01.10.2011 18:45:21
 	 */
-	public class Sprite2D extends DisplayObjectContainer2D {
+	public class Transform2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -22,12 +22,13 @@ package by.blooddy.secret.display {
 		//--------------------------------------------------------------------------
 		
 		/**
+		 * @private
 		 * Constructor
 		 */
-		public function Sprite2D() {
+		public function Transform2D() {
 			super();
 		}
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -37,37 +38,28 @@ package by.blooddy.secret.display {
 		/*
 		
 		TODO:
-
-		buttonMode
-		useHandCursor
-		dropTarget
-		hitArea
+		
+		colorTransform
+		concatenatedColorTransform?
+		matrix
+		concatenatedMatrix?
+		matrix3D?
+		perspectiveProjection?
+		pixelBounds
 		
 		*/
-
-		/**
-		 * @private
-		 */
-		private const _graphics:Graphics2D = new Graphics2D();
-
-		public function get graphics():Graphics2D {
-			return this._graphics;
-		}
 
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
 		//
 		//--------------------------------------------------------------------------
-
+		
 		/*
 		
-		TODO:
+		TODO
 		
-		startDrag?
-		stopDrag?
-		startTouchDrag?
-		stopTouchDrag?
+		getRelativeMatrix3D
 		
 		*/
 

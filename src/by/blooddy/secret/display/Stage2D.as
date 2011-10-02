@@ -6,7 +6,7 @@
 
 package by.blooddy.secret.display {
 
-	import by.blooddy.secret.geom.Transform;
+	import by.blooddy.secret.geom.Transform2D;
 	
 	import flash.errors.IllegalOperationError;
 
@@ -174,7 +174,7 @@ package by.blooddy.secret.display {
 //			Error.throwError( IllegalOperationError, 2071 );
 //		}
 
-		public override function set transform(value:Transform):void{
+		public override function set transform(value:Transform2D):void{
 			Error.throwError( IllegalOperationError, 2071 );
 		}
 

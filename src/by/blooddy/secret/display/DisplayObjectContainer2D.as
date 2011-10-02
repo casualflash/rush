@@ -77,7 +77,6 @@ package by.blooddy.secret.display {
 		
 		getObjectsUnderPoint
 		
-		
 		*/
 		
 		public function addChild(child:DisplayObject2D):DisplayObject2D {

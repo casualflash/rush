@@ -11,9 +11,9 @@ package by.blooddy.secret.display {
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 18:01:02
+	 * @created					03.10.2011 2:28:36
 	 */
-	public class Sprite2D extends DisplayObjectContainer2D {
+	public class Shape2D extends DisplayObject2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -24,7 +24,7 @@ package by.blooddy.secret.display {
 		/**
 		 * Constructor
 		 */
-		public function Sprite2D() {
+		public function Shape2D() {
 			super();
 		}
 		
@@ -33,17 +33,6 @@ package by.blooddy.secret.display {
 		//  Properties
 		//
 		//--------------------------------------------------------------------------
-
-		/*
-		
-		TODO:
-
-		buttonMode
-		useHandCursor
-		dropTarget
-		hitArea
-		
-		*/
 
 		/**
 		 * @private
@@ -54,23 +43,6 @@ package by.blooddy.secret.display {
 			return this._graphics;
 		}
 
-		//--------------------------------------------------------------------------
-		//
-		//  Methods
-		//
-		//--------------------------------------------------------------------------
-
-		/*
-		
-		TODO:
-		
-		startDrag?
-		stopDrag?
-		startTouchDrag?
-		stopTouchDrag?
-		
-		*/
-
 	}
-	
+
 }
