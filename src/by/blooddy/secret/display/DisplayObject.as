@@ -22,14 +22,24 @@ package by.blooddy.secret.display {
 	//  Events
 	//--------------------------------------
 
+	[Event( name="added", type="by.blooddy.secret.events.Event" )]
+
+	[Event( name="removed", type="by.blooddy.secret.events.Event" )]
+
+	[Event( name="addedToStage", type="by.blooddy.secret.events.Event" )]
+
+	[Event( name="removedFromStage", type="by.blooddy.secret.events.Event" )]
+
+	[Event( name="enterFrame", type="by.blooddy.secret.events.Event" )]
+
+	[Event( name="exitFrame", type="by.blooddy.secret.events.Event" )]
+
+	[Event( name="render", type="by.blooddy.secret.events.Event" )]
+
 	/*
 	
 	TODO
 	
-	addedToStage
-	removedFromStage
-	
-	BROADCSTED:
 	enterFrame
 	exitFrame
 	frameConstructed?

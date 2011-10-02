@@ -33,6 +33,12 @@ package by.blooddy.secret.events {
 		
 		public static const REMOVED_FROM_STAGE:String =	flash.events.Event.REMOVED_FROM_STAGE;
 		
+		public static const ENTER_FRAME:String =		flash.events.Event.ENTER_FRAME;
+		
+		public static const EXIT_FRAME:String =			flash.events.Event.EXIT_FRAME;
+		
+		public static const RENDER:String =				flash.events.Event.RENDER;
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
