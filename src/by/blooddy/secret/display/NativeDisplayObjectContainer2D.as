@@ -55,7 +55,6 @@ package by.blooddy.secret.display {
 		$internal override function $setParent(parent:NativeDisplayObjectContainer2D):void {
 			var child:DisplayObject2D;
 			if ( this.$parent ) { // мы потеряли СТАРОГО папу
-				this.$bubbleParent = this.$parent;
 				this.$dispatchEventFunction( new Event2D( Event.REMOVED, true ) );
 				if ( this.$stage ) {
 					this.$bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
@@ -68,7 +67,6 @@ package by.blooddy.secret.display {
 				if ( this.$parent !== parent ) {
 					this.$stage = ( parent as DisplayObject2D ).$stage;
 					this.$parent = parent;
-					this.$bubbleParent = parent;
 					this.$dispatchEventFunction( new Event2D( Event.ADDED, true ) );
 					if ( this.$stage ) {
 						this.$bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );

@@ -170,11 +170,6 @@ package by.blooddy.secret.display {
 		 */
 		$internal var $parent:NativeDisplayObjectContainer2D;
 
-		/**
-		 * @private
-		 */
-		$internal var $bubbleParent:NativeDisplayObjectContainer2D;
-
 		public function get parent():DisplayObjectContainer2D {
 			return this.$parent as DisplayObjectContainer2D;
 		}
@@ -268,12 +263,12 @@ package by.blooddy.secret.display {
 			if ( this.$bubble.hasEventListener( type ) || ( this.$capture && this.$capture.hasEventListener( type ) ) ) {
 				return true;
 			}
-			var target:DisplayObject2D = this.$bubbleParent;
+			var target:DisplayObject2D = this.$parent;
 			while ( target ) {
 				if ( target.hasEventListener( type ) || ( target.$capture && target.$capture.hasEventListener( type ) ) ) {
 					return true;
 				}
-				target = target.$bubbleParent;
+				target = target.$parent;
 			}
 			return false;
 		}
@@ -314,7 +309,6 @@ package by.blooddy.secret.display {
 		 */
 		$internal function $setParent(parent:NativeDisplayObjectContainer2D):void {
 			if ( this.$parent ) {
-				this.$bubbleParent = this.$parent;
 				this.$dispatchEventFunction( new Event2D( Event.REMOVED, true ) );
 				if ( this.$stage ) {
 					this.$bubble.dispatchEvent( new Event2D( Event.REMOVED_FROM_STAGE ) );
@@ -324,7 +318,6 @@ package by.blooddy.secret.display {
 				if ( this.$parent !== parent ) {
 					this.$stage = ( parent as DisplayObject2D ).$stage;
 					this.$parent = parent;
-					this.$bubbleParent = parent;
 					this.$dispatchEventFunction( new Event2D( Event.ADDED, true ) );
 					if ( this.$stage ) {
 						this.$bubble.dispatchEvent( new Event2D( Event.ADDED_TO_STAGE ) );
@@ -361,7 +354,7 @@ package by.blooddy.secret.display {
 			var target:DisplayObject2D;
 			if ( !this._parents ) {
 				this._parents = new Vector.<DisplayObject2D>();
-				target = this.$bubbleParent;
+				target = this.$parent;
 				while ( target ) {
 					this._parents.push( target );
 					target = target.$parent;
