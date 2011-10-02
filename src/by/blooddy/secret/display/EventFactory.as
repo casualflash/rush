@@ -16,6 +16,7 @@ package by.blooddy.secret.display {
 
 	use namespace $internal;
 
+	[ExcludeClass]
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0

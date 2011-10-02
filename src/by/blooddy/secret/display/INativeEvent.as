@@ -6,6 +6,7 @@
 
 package by.blooddy.secret.display {
 	
+	[ExcludeClass]
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
