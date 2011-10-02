@@ -6,6 +6,10 @@
 
 package by.blooddy.secret.display {
 
+	import avmplus.getQualifiedClassName;
+	
+	import flash.errors.IllegalOperationError;
+
 	use namespace $internal;
 
 	/**
@@ -28,6 +32,9 @@ package by.blooddy.secret.display {
 		 */
 		public function DisplayObjectContainer2D() {
 			super();
+			if ( ( this as Object ).constructor === DisplayObjectContainer2D ) {
+				Error.throwError( IllegalOperationError, 2012, getQualifiedClassName( this ) );
+			}
 		}
 		
 		//--------------------------------------------------------------------------

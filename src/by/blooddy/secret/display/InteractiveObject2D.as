@@ -5,6 +5,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 package by.blooddy.secret.display {
+
+	import avmplus.getQualifiedClassName;
+	
+	import flash.errors.IllegalOperationError;
 	
 	//--------------------------------------
 	//  Events
@@ -52,6 +56,9 @@ package by.blooddy.secret.display {
 		 */
 		public function InteractiveObject2D() {
 			super();
+			if ( ( this as Object ).constructor === InteractiveObject2D ) {
+				Error.throwError( IllegalOperationError, 2012, getQualifiedClassName( this ) );
+			}
 		}
 		
 		//--------------------------------------------------------------------------

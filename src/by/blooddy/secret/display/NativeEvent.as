@@ -8,6 +8,8 @@ package by.blooddy.secret.display {
 	
 	import avmplus.getQualifiedClassName;
 	
+	import by.blooddy.secret.events.Event2D;
+	
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 
@@ -55,7 +57,7 @@ package by.blooddy.secret.display {
 		 */
 		public function NativeEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
 			super( type, bubbles, cancelable );
-			if ( !( this is NativeEvent ) ) {
+			if ( !( this is Event2D ) ) {
 				Error.throwError( IllegalOperationError, 2012, getQualifiedClassName( this ) );
 			}
 		}

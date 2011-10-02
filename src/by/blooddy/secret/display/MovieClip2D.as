@@ -42,6 +42,7 @@ package by.blooddy.secret.display {
 		currentFrameLabel
 		currentLabel
 		totalFrames
+		isPlaying
 		
 		enabled
 		

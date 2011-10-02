@@ -6,7 +6,7 @@
 
 package by.blooddy.secret.display {
 	
-	import avmplus.getQualifiedSuperclassName;
+	import avmplus.getQualifiedClassName;
 	
 	import by.blooddy.secret.geom.Transform;
 	
@@ -92,9 +92,8 @@ package by.blooddy.secret.display {
 		 */
 		public function DisplayObject2D() {
 			super();
-			// TODO: сделать проверку на конкретный класс
 			if ( ( this as Object ).constructor === DisplayObject2D ) {
-				Error.throwError( IllegalOperationError, 2012, getQualifiedSuperclassName( this ) );
+				Error.throwError( IllegalOperationError, 2012, getQualifiedClassName( this ) );
 			}
 			this.$bubble = new EventDispatcher( this );
 		}

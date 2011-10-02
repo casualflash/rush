@@ -12,12 +12,15 @@ package by.blooddy.secret.display {
 
 	[ExcludeClass]
 	/**
-	 * @private
+	 * обёртка вокруг стандартного события флэша
+	 * 
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
 	 * @created					02.10.2011 20:16:50
+	 * 
+	 * @see						flash.events.Event
 	 */
 	internal final class $Event extends Event implements INativeEvent {
 		
