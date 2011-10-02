@@ -15,6 +15,7 @@ package by.blooddy.secret.display {
 	import flash.events.Event;
 	import flash.events.EventPhase;
 	import flash.events.IEventDispatcher;
+	import by.blooddy.secret.events.Event;
 
 	use namespace $internal;
 
@@ -26,9 +27,7 @@ package by.blooddy.secret.display {
 	
 	TODO
 	
-	added
 	addedToStage
-	removed
 	removedFromStage
 	
 	BROADCSTED:
@@ -136,7 +135,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		private var _parent:NativeDisplayObjectContainer;
+		$internal var _parent:NativeDisplayObjectContainer;
 
 		/**
 		 * @private
@@ -205,7 +204,7 @@ package by.blooddy.secret.display {
 			return false;
 		}
 
-		public function dispatchEvent(event:Event):Boolean {
+		public function dispatchEvent(event:flash.events.Event):Boolean {
 			if ( event.bubbles ) {
 				if ( !( event is NativeEvent ) ) throw new ArgumentError();
 				return this.dispatchEventFunction( event as NativeEvent );
@@ -229,7 +228,35 @@ package by.blooddy.secret.display {
 		hitTestObject
 		
 		*/
+
+		//--------------------------------------------------------------------------
+		//
+		//  Internal methods
+		//
+		//--------------------------------------------------------------------------
 		
+		$internal function $setParent(parent:NativeDisplayObjectContainer):void {
+			if ( this._parent ) { // мы потеряли СТАРОГО папу
+				this._bubbleParent = this._parent;
+				this.dispatchEventFunction( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.REMOVED, true ) );
+				if ( this._stage ) {
+					this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.REMOVED_FROM_STAGE ) );
+				}
+			}
+			if ( parent && this._parent !== parent ) {
+				this._stage = ( parent as DisplayObject )._stage;
+				this._parent = parent;
+				this._bubbleParent = parent;
+				this.dispatchEventFunction( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.ADDED, true ) );
+				if ( this._stage ) {
+					this._bubble.dispatchEvent( new by.blooddy.secret.events.Event( by.blooddy.secret.events.Event.ADDED_TO_STAGE ) );
+				}
+			} else {
+				this._parent = null;
+				this._stage = null;
+			}
+		}
+
 		//--------------------------------------------------------------------------
 		//
 		//  Private methods
