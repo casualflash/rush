@@ -7,6 +7,7 @@
 package by.blooddy.secret.display {
 
 	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
 
 	use namespace $internal;
 
@@ -55,13 +56,31 @@ package by.blooddy.secret.display {
 		
 		*/
 
+		//----------------------------------
+		//  matrix
+		//----------------------------------
+		
 		public function get matrix():Matrix {
-			return this.$target.$getMatrix().clone();
+			if ( this.$target.$changed & 1 ) this.$target.$updateMatrix();
+			return this.$target.$matrix.clone();
 		}
 
+		/**
+		 * @private
+		 */
 		public function set matrix(value:Matrix):void {
 			if ( !value ) return;
-			this.$target.$setMatrix( value );
+			this.$target.$matrix.copyFrom( value );
+			this.$target.$updateMatrixDerivatives();
+		}
+
+		//----------------------------------
+		//  height
+		//----------------------------------
+		
+		public function get pixelBounds():Rectangle {
+			if ( this.$target.$changed & 2 ) this.$target.$updateBounds();
+			return this.$target.$bounds.clone();
 		}
 
 		//--------------------------------------------------------------------------

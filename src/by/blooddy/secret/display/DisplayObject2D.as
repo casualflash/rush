@@ -18,6 +18,7 @@ package by.blooddy.secret.display {
 	import flash.events.IEventDispatcher;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
+	import flash.geom.Point;
 
 	use namespace $internal;
 
@@ -144,6 +145,11 @@ package by.blooddy.secret.display {
 		 */
 		$internal const $matrix:Matrix = new Matrix();
 
+		/**
+		 * @private
+		 */
+		$internal const $bounds:Rectangle = new Rectangle();
+
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -257,13 +263,17 @@ package by.blooddy.secret.display {
 			if ( !value ) Error.throwError( TypeError, 2007 );
 			if ( this.$transform == value || this == value.$target ) return;
 			var target:DisplayObject2D = value.$target;
-			this.$setMatrix( target.$matrix );
+			this.$matrix.copyFrom( target.$matrix );
+			this.$updateMatrixDerivatives();
 		}
 
 		//----------------------------------
 		//  x
 		//----------------------------------
 
+		/**
+		 * @private
+		 */
 		$internal var $x:Number = 0;
 
 		public function get x():Number {
@@ -276,15 +286,19 @@ package by.blooddy.secret.display {
 		public function set x(value:Number):void {
 			if ( this.$x == value ) return;
 			this.$x = value;
-			this.$changed |= 1;
+			this.$matrix.tx = value;
+			this.$changed |= 2;
 		}
 
 		//----------------------------------
 		//  y
 		//----------------------------------
 
+		/**
+		 * @private
+		 */
 		$internal var $y:Number = 0;
-
+		
 		public function get y():Number {
 			return this.$y;
 		}
@@ -295,7 +309,8 @@ package by.blooddy.secret.display {
 		public function set y(value:Number):void {
 			if ( this.$y == value ) return;
 			this.$y = value;
-			this.$changed |= 1;
+			this.$matrix.ty = value;
+			this.$changed |= 2;
 		}
 		
 		//----------------------------------
@@ -317,7 +332,7 @@ package by.blooddy.secret.display {
 		public function set scaleX(value:Number):void {
 			if ( this.$scaleX == value ) return;
 			this.$scaleX = value;
-			this.$changed |= 1;
+			this.$changed |= 3;
 		}
 		
 		//----------------------------------
@@ -339,7 +354,7 @@ package by.blooddy.secret.display {
 		public function set scaleY(value:Number):void {
 			if ( this.$scaleY == value ) return;
 			this.$scaleY = value;
-			this.$changed |= 1;
+			this.$changed |= 3;
 		}
 		
 		//----------------------------------
@@ -361,15 +376,63 @@ package by.blooddy.secret.display {
 		public function set rotation(value:Number):void {
 			if ( this.$rotation == value ) return;
 			this.$rotation = value;
-			this.$changed |= 1;
+			this.$changed |= 3;
 		}
 
+		//----------------------------------
+		//  width
+		//----------------------------------
+		
+		public function get width():Number {
+			if ( this.$changed & 2 ) this.$updateBounds();
+			return this.$bounds.width;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set width(value:Number):void {
+			throw new IllegalOperationError( 'TODO' );
+		}
+		
+		//----------------------------------
+		//  height
+		//----------------------------------
+		
+		public function get height():Number {
+			if ( this.$changed & 2 ) this.$updateBounds();
+			return this.$bounds.height;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set height(value:Number):void {
+			throw new IllegalOperationError( 'TODO' );
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
 		//
 		//--------------------------------------------------------------------------
 
+		/*
+		
+		TODO
+		
+		getBounds
+		getRect
+		globalToLocal
+		localToGlobal
+		globalToLocal3D?
+		local3DToGlobal?
+		
+		hitTestPoint
+		hitTestObject
+		
+		*/
+		
 		public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
 			if ( useCapture ) {
 				if ( !this.$capture ) this.$capture = new EventDispatcher( this );
@@ -425,21 +488,13 @@ package by.blooddy.secret.display {
 			}
 		}
 
-		/*
-		
-		TODO
-		
-		getBounds
-		getRect
-		globalToLocal
-		localToGlobal
-		globalToLocal3D?
-		local3DToGlobal?
-		
-		hitTestPoint
-		hitTestObject
-		
-		*/
+		public function getBounds(targetCoordinateSpace:DisplayObject2D):Rectangle {
+			if ( targetCoordinateSpace ) {
+				throw new IllegalOperationError( 'TODO' );
+			} else {
+				return this.$bounds.clone();
+			}
+		}
 
 		//--------------------------------------------------------------------------
 		//
@@ -548,36 +603,44 @@ package by.blooddy.secret.display {
 			}
 		}
 
-		$internal function $getMatrix():Matrix {
-			if ( this.$changed & 1 ) {
-				this.$changed &= ~1;
-//				this.$matrix.createBox(
-//					this.$scaleX,
-//					this.$scaleY,
-//					this.$rotation / 180 * Math.PI,
-//					this.$x,
-//					this.$y
-//				);
-				this.$matrix.identity();
-				this.$matrix.scale( this.$scaleX, this.$scaleY );
-				this.$matrix.rotate( this.$rotation / 180 * Math.PI );
-				this.$matrix.translate( this.$x, this.$y );
-			}
-			return this.$matrix;
+		$internal function $updateMatrix():void {
+			this.$changed &= ~1;
+//			this.$matrix.createBox(
+//				this.$scaleX,
+//				this.$scaleY,
+//				this.$rotation / 180 * Math.PI,
+//				this.$x,
+//				this.$y
+//			);
+			this.$matrix.identity();
+			this.$matrix.scale( this.$scaleX, this.$scaleY );
+			this.$matrix.rotate( this.$rotation / 180 * Math.PI );
+			this.$matrix.translate( this.$x, this.$y );
 		}
 
-		$internal function $setMatrix(value:Matrix):void {
-			this.$matrix.copyFrom( value );
-			this.$x = value.tx;
-			this.$y = value.ty;
-			var a:Number = value.a;
-			var b:Number = value.b;
-			var c:Number = value.c;
-			var d:Number = value.d;
+		$internal function $updateMatrixDerivatives():void {
+			this.$x = this.$matrix.tx;
+			this.$y = this.$matrix.ty;
+			var a:Number = this.$matrix.a;
+			var b:Number = this.$matrix.b;
+			var c:Number = this.$matrix.c;
+			var d:Number = this.$matrix.d;
 			this.$scaleX = ( a < 0 != b < 0 ? -1 : 1 ) * Math.sqrt( a*a + b*b );
 			this.$scaleY = ( c < 0 != d < 0 ? -1 : 1 ) * Math.sqrt( c*c + d*d );
 			this.$rotation = Math.atan2( b, a ) / Math.PI * 180;
-			// TODO: call something
+		}
+
+		$internal function $updateBounds():void {
+			if ( this.$changed & 1 ) this.$updateMatrix();
+			this.$changed &= ~2;
+			var topLeft:Point =		this.$matrix.transformPoint( this.$orign.topLeft );
+			var topRight:Point =	this.$matrix.transformPoint( new Point( this.$orign.right, this.$orign.top ) );
+			var bottomRight:Point =	this.$matrix.transformPoint( this.$orign.bottomRight );
+			var bottomLeft:Point =	this.$matrix.transformPoint( new Point( this.$orign.left, this.$orign.bottom ) );
+			this.$bounds.top =		Math.min( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y );
+			this.$bounds.right =	Math.max( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x );
+			this.$bounds.bottom =	Math.max( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y );
+			this.$bounds.left =		Math.min( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x );
 		}
 
 	}
