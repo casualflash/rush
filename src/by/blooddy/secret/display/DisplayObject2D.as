@@ -17,6 +17,7 @@ package by.blooddy.secret.display {
 	import flash.events.EventPhase;
 	import flash.events.IEventDispatcher;
 	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
 
 	use namespace $internal;
 
@@ -92,10 +93,10 @@ package by.blooddy.secret.display {
 		 * Constructor
 		 */
 		public function DisplayObject2D() {
-			super();
 			if ( ( this as Object ).constructor === DisplayObject2D ) {
 				Error.throwError( IllegalOperationError, 2012, getQualifiedClassName( this ) );
 			}
+			super();
 			this.$bubble = new EventDispatcher( this );
 		}
 
@@ -128,8 +129,20 @@ package by.blooddy.secret.display {
 
 		/**
 		 * @private
+		 * 1 - matrix
+		 * 2 - bounds
 		 */
-		$internal var $matrix:Matrix = new Matrix();
+		$internal var $changed:uint = 0;
+		
+		/**
+		 * @private
+		 */
+		$internal const $orign:Rectangle = new Rectangle();
+		
+		/**
+		 * @private
+		 */
+		$internal const $matrix:Matrix = new Matrix();
 
 		//--------------------------------------------------------------------------
 		//
@@ -147,22 +160,18 @@ package by.blooddy.secret.display {
 		loaderInfo?
 		opaqueBackground?
 		
-		name
 		alpha
 		visible
 		
 		z?
+		scaleZ?
 		width
 		height
-		scaleX
-		scaleY
-		scaleZ?
-		rotation
 		rotationX?
 		rotationY?
 		rotationZ?
 		
-		scrollRect
+		scrollRect?
 		scale9Grid?
 		
 		mouseX
@@ -248,46 +257,113 @@ package by.blooddy.secret.display {
 			if ( !value ) Error.throwError( TypeError, 2007 );
 			if ( this.$transform == value || this == value.$target ) return;
 			var target:DisplayObject2D = value.$target;
-			this.$matrix = target.$matrix.clone();
-			// TODO: writes new values
+			this.$setMatrix( target.$matrix );
 		}
 
 		//----------------------------------
 		//  x
 		//----------------------------------
 
+		$internal var $x:Number = 0;
+
 		public function get x():Number {
-			return this.$matrix.tx;
+			return this.$x;
 		}
 
 		/**
 		 * @private
 		 */
 		public function set x(value:Number):void {
-			// TODO: isNaN
-			if ( this.$matrix.tx == value ) return;
-			this.$matrix.tx = value;
-			// TODO: call something
+			if ( this.$x == value ) return;
+			this.$x = value;
+			this.$changed |= 1;
 		}
 
 		//----------------------------------
-		//  x
+		//  y
 		//----------------------------------
-		
+
+		$internal var $y:Number = 0;
+
 		public function get y():Number {
-			return this.$matrix.ty;
+			return this.$y;
 		}
 		
 		/**
 		 * @private
 		 */
 		public function set y(value:Number):void {
-			// TODO: isNaN
-			if ( this.$matrix.ty == value ) return;
-			this.$matrix.ty = value;
-			// TODO: call something
+			if ( this.$y == value ) return;
+			this.$y = value;
+			this.$changed |= 1;
 		}
 		
+		//----------------------------------
+		//  scaleX
+		//----------------------------------
+
+		/**
+		 * @private
+		 */
+		$internal var $scaleX:Number = 1;
+
+		public function get scaleX():Number {
+			return this.$scaleX;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set scaleX(value:Number):void {
+			if ( this.$scaleX == value ) return;
+			this.$scaleX = value;
+			this.$changed |= 1;
+		}
+		
+		//----------------------------------
+		//  scaleY
+		//----------------------------------
+		
+		/**
+		 * @private
+		 */
+		$internal var $scaleY:Number = 1;
+		
+		public function get scaleY():Number {
+			return this.$scaleY;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set scaleY(value:Number):void {
+			if ( this.$scaleY == value ) return;
+			this.$scaleY = value;
+			this.$changed |= 1;
+		}
+		
+		//----------------------------------
+		//  rotation
+		//----------------------------------
+
+		/**
+		 * @private
+		 */
+		$internal var $rotation:Number = 0;
+		
+		public function get rotation():Number {
+			return this.$rotation;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set rotation(value:Number):void {
+			if ( this.$rotation == value ) return;
+			this.$rotation = value;
+			this.$changed |= 1;
+		}
+
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
@@ -341,7 +417,7 @@ package by.blooddy.secret.display {
 			if ( event.bubbles ) {
 				if ( !( event is INativeEvent ) ) {
 					event = EventFactory.getEvent( event );
-					if ( !event ) throw new ArgumentError();
+					if ( !event ) throw new TypeError();
 				}
 				return this.$dispatchEventFunction( event );
 			} else {
@@ -371,50 +447,6 @@ package by.blooddy.secret.display {
 		//
 		//--------------------------------------------------------------------------
 
-		/**
-		 * @private
-		 */
-		$internal function $setParent(parent:NativeDisplayObjectContainer2D):void {
-			if ( this.$parent ) {
-				this.$dispatchEventFunction( new $Event( Event.REMOVED, true ) );
-				if ( this.$stage  && this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
-					this.$bubble.dispatchEvent( new Event( Event.REMOVED_FROM_STAGE ) );
-				}
-			}
-			if ( parent ) {
-				if ( this.$parent !== parent ) {
-					this.$stage = ( parent as DisplayObject2D ).$stage;
-					this.$parent = parent;
-					this.$dispatchEventFunction( new $Event( Event.ADDED, true ) );
-					if ( this.$stage && this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
-						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
-					}
-				}
-			} else {
-				this.$parent = null;
-				this.$stage = null;
-			}
-		}
-
-		/**
-		 * @private
-		 */
-		$internal function $setStage(stage:Stage2D):void {
-			if ( this.$stage && this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
-				this.$bubble.dispatchEvent( new Event( Event.REMOVED_FROM_STAGE ) );
-			}
-			if ( stage ) {
-				if ( this.$stage !== stage ) {
-					this.$stage = stage;
-					if ( this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
-						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
-					}
-				}
-			} else {
-				this.$stage = null;
-			}
-		}
-		
 		/**
 		 * @private
 		 */
@@ -471,9 +503,85 @@ package by.blooddy.secret.display {
 			}
 			return canceled;
 		}
-		
+
+		/**
+		 * @private
+		 */
+		$internal function $setParent(parent:NativeDisplayObjectContainer2D):void {
+			if ( this.$parent ) {
+				this.$dispatchEventFunction( new $Event( Event.REMOVED, true ) );
+				if ( this.$stage  && this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
+					this.$bubble.dispatchEvent( new Event( Event.REMOVED_FROM_STAGE ) );
+				}
+			}
+			if ( parent ) {
+				if ( this.$parent !== parent ) {
+					this.$stage = parent.$stage;
+					this.$parent = parent;
+					this.$dispatchEventFunction( new $Event( Event.ADDED, true ) );
+					if ( this.$stage && this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
+						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
+					}
+				}
+			} else {
+				this.$parent = null;
+				this.$stage = null;
+			}
+		}
+
+		/**
+		 * @private
+		 */
+		$internal function $setStage(stage:Stage2D):void {
+			if ( this.$stage && this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
+				this.$bubble.dispatchEvent( new Event( Event.REMOVED_FROM_STAGE ) );
+			}
+			if ( stage ) {
+				if ( this.$stage !== stage ) {
+					this.$stage = stage;
+					if ( this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
+						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
+					}
+				}
+			} else {
+				this.$stage = null;
+			}
+		}
+
+		$internal function $getMatrix():Matrix {
+			if ( this.$changed & 1 ) {
+				this.$changed &= ~1;
+//				this.$matrix.createBox(
+//					this.$scaleX,
+//					this.$scaleY,
+//					this.$rotation / 180 * Math.PI,
+//					this.$x,
+//					this.$y
+//				);
+				this.$matrix.identity();
+				this.$matrix.scale( this.$scaleX, this.$scaleY );
+				this.$matrix.rotate( this.$rotation / 180 * Math.PI );
+				this.$matrix.translate( this.$x, this.$y );
+			}
+			return this.$matrix;
+		}
+
+		$internal function $setMatrix(value:Matrix):void {
+			this.$matrix.copyFrom( value );
+			this.$x = value.tx;
+			this.$y = value.ty;
+			var a:Number = value.a;
+			var b:Number = value.b;
+			var c:Number = value.c;
+			var d:Number = value.d;
+			this.$scaleX = ( a < 0 != b < 0 ? -1 : 1 ) * Math.sqrt( a*a + b*b );
+			this.$scaleY = ( c < 0 != d < 0 ? -1 : 1 ) * Math.sqrt( c*c + d*d );
+			this.$rotation = Math.atan2( b, a ) / Math.PI * 180;
+			// TODO: call something
+		}
+
 	}
-	
+
 }
 
 //==============================================================================

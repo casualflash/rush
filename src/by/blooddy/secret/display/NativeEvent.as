@@ -56,10 +56,10 @@ package by.blooddy.secret.display {
 		 * @param	cancelable
 		 */
 		public function NativeEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
-			super( type, bubbles, cancelable );
 			if ( !( this is Event2D ) ) {
 				Error.throwError( IllegalOperationError, 2012, getQualifiedClassName( this ) );
 			}
+			super( type, bubbles, cancelable );
 		}
 		
 		//--------------------------------------------------------------------------

@@ -55,10 +55,10 @@ package by.blooddy.secret.display {
 		 * Constructor
 		 */
 		public function InteractiveObject2D() {
-			super();
 			if ( ( this as Object ).constructor === InteractiveObject2D ) {
 				Error.throwError( IllegalOperationError, 2012, getQualifiedClassName( this ) );
 			}
+			super();
 		}
 		
 		//--------------------------------------------------------------------------

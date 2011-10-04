@@ -5,6 +5,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 package by.blooddy.secret.display {
+
 	import flash.geom.Matrix;
 
 	use namespace $internal;
@@ -29,8 +30,8 @@ package by.blooddy.secret.display {
 		 * Constructor
 		 */
 		public function NativeTransform2D(target:DisplayObject2D) {
-			super();
 			if ( !target ) Error.throwError( TypeError, 2007, 'target' );
+			super();
 			this.$target = target;
 		}
 
@@ -51,18 +52,16 @@ package by.blooddy.secret.display {
 		concatenatedMatrix?
 		matrix3D?
 		perspectiveProjection?
-		pixelBounds
 		
 		*/
 
 		public function get matrix():Matrix {
-			return this.$target.$matrix.clone();
+			return this.$target.$getMatrix().clone();
 		}
 
 		public function set matrix(value:Matrix):void {
 			if ( !value ) return;
-			this.$target.$matrix = value.clone();
-			// TODO: call something?
+			this.$target.$setMatrix( value );
 		}
 
 		//--------------------------------------------------------------------------

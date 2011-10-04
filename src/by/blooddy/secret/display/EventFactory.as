@@ -18,6 +18,9 @@ package by.blooddy.secret.display {
 
 	[ExcludeClass]
 	/**
+	 * используется, для конвертации флэшовых событий в кастомные.
+	 * стандартное событие необходимо сконвертить, что была возможность его баблить. 
+	 * 
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10

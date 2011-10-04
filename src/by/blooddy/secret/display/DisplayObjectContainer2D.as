@@ -31,10 +31,10 @@ package by.blooddy.secret.display {
 		 * Constructor
 		 */
 		public function DisplayObjectContainer2D() {
-			super();
 			if ( ( this as Object ).constructor === DisplayObjectContainer2D ) {
 				Error.throwError( IllegalOperationError, 2012, getQualifiedClassName( this ) );
 			}
+			super();
 		}
 		
 		//--------------------------------------------------------------------------
