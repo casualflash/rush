@@ -16,6 +16,7 @@ package by.blooddy.secret.display {
 	import flash.events.EventDispatcher;
 	import flash.events.EventPhase;
 	import flash.events.IEventDispatcher;
+	import flash.geom.Matrix;
 
 	use namespace $internal;
 
@@ -107,6 +108,17 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
+		private var _parents:Vector.<DisplayObject2D>;
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Internal variables
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
 		$internal var $bubble:EventDispatcher;
 		
 		/**
@@ -117,7 +129,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		private var _parents:Vector.<DisplayObject2D>;
+		$internal var $matrix:Matrix = new Matrix();
 
 		//--------------------------------------------------------------------------
 		//
@@ -139,10 +151,6 @@ package by.blooddy.secret.display {
 		alpha
 		visible
 		
-		transform
-		
-		x
-		y
 		z?
 		width
 		height
@@ -220,13 +228,66 @@ package by.blooddy.secret.display {
 		}
 		
 		//----------------------------------
-		//  name
+		//  transform
 		//----------------------------------
+
+		/**
+		 * @private
+		 */
+		$internal var $transform:Transform2D;
+
+		public function get transform():Transform2D {
+			if ( !this.$transform ) this.$transform = new Transform2D( this );
+			return this.$transform;
+		}
 		
+		/**
+		 * @private
+		 */
 		public function set transform(value:Transform2D):void{
-			Error.throwError( IllegalOperationError, 2071 );
+			if ( !value ) Error.throwError( TypeError, 2007 );
+			if ( this.$transform == value || this == value.$target ) return;
+			var target:DisplayObject2D = value.$target;
+			this.$matrix = target.$matrix.clone();
+			// TODO: writes new values
 		}
 
+		//----------------------------------
+		//  x
+		//----------------------------------
+
+		public function get x():Number {
+			return this.$matrix.tx;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set x(value:Number):void {
+			// TODO: isNaN
+			if ( this.$matrix.tx == value ) return;
+			this.$matrix.tx = value;
+			// TODO: call something
+		}
+
+		//----------------------------------
+		//  x
+		//----------------------------------
+		
+		public function get y():Number {
+			return this.$matrix.ty;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set y(value:Number):void {
+			// TODO: isNaN
+			if ( this.$matrix.ty == value ) return;
+			this.$matrix.ty = value;
+			// TODO: call something
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Methods

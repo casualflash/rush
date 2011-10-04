@@ -5,7 +5,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 package by.blooddy.secret.geom {
-	
+
+	import by.blooddy.secret.display.DisplayObject2D;
+	import by.blooddy.secret.display.NativeTransform2D;
+
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
@@ -13,7 +16,7 @@ package by.blooddy.secret.geom {
 	 * @langversion				3.0
 	 * @created					01.10.2011 18:45:21
 	 */
-	public class Transform2D {
+	public class Transform2D extends NativeTransform2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -22,46 +25,11 @@ package by.blooddy.secret.geom {
 		//--------------------------------------------------------------------------
 		
 		/**
-		 * @private
 		 * Constructor
 		 */
-		public function Transform2D() {
-			super();
+		public function Transform2D(target:DisplayObject2D) {
+			super( target );
 		}
-
-		//--------------------------------------------------------------------------
-		//
-		//  Properties
-		//
-		//--------------------------------------------------------------------------
-
-		/*
-		
-		TODO:
-		
-		colorTransform
-		concatenatedColorTransform?
-		matrix
-		concatenatedMatrix?
-		matrix3D?
-		perspectiveProjection?
-		pixelBounds
-		
-		*/
-
-		//--------------------------------------------------------------------------
-		//
-		//  Methods
-		//
-		//--------------------------------------------------------------------------
-		
-		/*
-		
-		TODO
-		
-		getRelativeMatrix3D
-		
-		*/
 
 	}
 	

@@ -24,6 +24,7 @@
     <classEntry path="by.blooddy.secret.display.$GestureEvent"/>
     <classEntry path="by.blooddy.secret.display.Shape2D"/>
     <classEntry path="by.blooddy.secret.display.Graphics2D"/>
+    <classEntry path="by.blooddy.secret.display.NativeTransform2D"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
