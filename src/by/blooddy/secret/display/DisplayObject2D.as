@@ -103,20 +103,14 @@ package by.blooddy.secret.display {
 
 		//--------------------------------------------------------------------------
 		//
-		//  Variables
-		//
-		//--------------------------------------------------------------------------
-
-		/**
-		 * @private
-		 */
-		private var _parents:Vector.<DisplayObject2D>;
-		
-		//--------------------------------------------------------------------------
-		//
 		//  Internal variables
 		//
 		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		$internal var $parents:Vector.<DisplayObject2D>;
 		
 		/**
 		 * @private
@@ -421,8 +415,6 @@ package by.blooddy.secret.display {
 		
 		TODO
 		
-		getBounds
-		getRect
 		globalToLocal
 		localToGlobal
 		globalToLocal3D?
@@ -490,10 +482,39 @@ package by.blooddy.secret.display {
 
 		public function getBounds(targetCoordinateSpace:DisplayObject2D):Rectangle {
 			if ( targetCoordinateSpace ) {
-				throw new IllegalOperationError( 'TODO' );
+				throw new IllegalOperationError();
 			} else {
 				return this.$bounds.clone();
 			}
+		}
+
+		public function localToGlobal(point:Point):Point {
+			if ( this.$changed & 1 ) this.$updateMatrix();
+			point = this.$matrix.transformPoint( point );
+			if ( this.$parent ) {
+				if ( !this.$parents ) this.$updateParents();
+				for each ( var parent:DisplayObject2D in this.$parents ) {
+					if ( parent.$changed & 1 ) parent.$updateMatrix();
+					point = parent.$matrix.transformPoint( point );
+				}
+			}
+			return point.clone();
+		}
+
+		public function globalToLocal(point:Point):Point {
+			if ( this.$changed & 1 ) this.$updateMatrix();
+			point = this.$matrix.transformPoint( point );
+			if ( this.$parent ) {
+				if ( !this.$parents ) this.$updateParents();
+				var target:DisplayObject2D;
+				var l:uint = this.$parents.length;
+				for ( var i:uint = l-1; i>=0; --i ) {
+					target = this.$parents[ i ];
+					if ( parent.$changed & 1 ) parent.$updateMatrix();
+					point = parent.$matrix.transformPoint( point );
+				}
+			}
+			return point.clone();
 		}
 
 		//--------------------------------------------------------------------------
@@ -502,27 +523,28 @@ package by.blooddy.secret.display {
 		//
 		//--------------------------------------------------------------------------
 
+		$internal function $updateParents():void {
+			this.$parents = new Vector.<DisplayObject2D>();
+			var parent:DisplayObject2D = this.$parent;
+			while ( parent ) {
+				this.$parents.push( parent );
+				parent = parent.$parent;
+			}
+		}
+
 		/**
 		 * @private
 		 */
 		$internal function $dispatchEventFunction(event:Event):Boolean {
 			var canceled:Boolean = false;
-			var target:DisplayObject2D;
-			if ( !this._parents ) {
-				this._parents = new Vector.<DisplayObject2D>();
-				target = this.$parent;
-				while ( target ) {
-					this._parents.push( target );
-					target = target.$parent;
-				}
-			}
+			if ( !this.$parents ) this.$updateParents();
 			// надо отдиспатчить капчу
 			var type:String = event.type;
+			var target:DisplayObject2D;
 			var e:Object;
-			var i:int;
-			var l:uint = this._parents.length;
-			for ( i=l-1; i>=0; --i ) {
-				target = this._parents[ i ];
+			var l:uint = this.$parents.length;
+			for ( var i:uint = l-1; i>=0; --i ) {
+				target = this.$parents[ i ];
 				if ( target.$capture && target.$capture.hasEventListener( type ) ) {
 					e = event.clone();
 					e.$eventPhase = EventPhase.CAPTURING_PHASE;
@@ -542,7 +564,7 @@ package by.blooddy.secret.display {
 					return canceled;
 				}
 			}
-			for each ( target in this._parents ) {
+			for each ( target in this.$parents ) {
 				if ( target.hasEventListener( type ) ) {
 					e = event.clone();
 					e.$eventPhase = EventPhase.BUBBLING_PHASE;
