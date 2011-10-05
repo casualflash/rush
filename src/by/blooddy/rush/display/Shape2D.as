@@ -4,19 +4,16 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.geom {
-
-	import by.blooddy.secret.display.DisplayObject2D;
-	import by.blooddy.secret.display.NativeTransform2D;
-
+package by.blooddy.rush.display {
+	
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 18:45:21
+	 * @created					03.10.2011 2:28:36
 	 */
-	public class Transform2D extends NativeTransform2D {
+	public class Shape2D extends DisplayObject2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -27,10 +24,25 @@ package by.blooddy.secret.geom {
 		/**
 		 * Constructor
 		 */
-		public function Transform2D(target:DisplayObject2D) {
-			super( target );
+		public function Shape2D() {
+			super();
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+
+		/**
+		 * @private
+		 */
+		private const _graphics:Graphics2D = new Graphics2D();
+
+		public function get graphics():Graphics2D {
+			return this._graphics;
 		}
 
 	}
-	
+
 }

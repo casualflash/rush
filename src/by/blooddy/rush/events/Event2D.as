@@ -4,20 +4,21 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.display {
-
-	import flash.display.BitmapData;
-	import flash.display.PixelSnapping;
+package by.blooddy.rush.events {
+	
+	import by.blooddy.rush.display.NativeEvent;
+	
+	import flash.events.Event;
 	
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 18:01:46
+	 * @created					01.10.2011 20:21:48
 	 */
-	public class Bitmap2D extends DisplayObject2D {
-		
+	public class Event2D extends NativeEvent {
+
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
@@ -27,26 +28,20 @@ package by.blooddy.secret.display {
 		/**
 		 * Constructor
 		 */
-		public function Bitmap2D(bitmapData:BitmapData=null, pixelSnapping:String=PixelSnapping.AUTO, smoothing:Boolean=false) {
-			super();
+		public function Event2D(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+			super( type, bubbles, cancelable );
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+
+		public override function clone():Event {
+			return new Event2D( super.type, super.bubbles, super.cancelable );
 		}
 
-		//--------------------------------------------------------------------------
-		//
-		//  Properties
-		//
-		//--------------------------------------------------------------------------
-
-		/*
-		
-		TODO:
-		
-		bitmapData
-		pixelSnapping
-		smoothing
-		
-		*/
-
 	}
-	
+
 }

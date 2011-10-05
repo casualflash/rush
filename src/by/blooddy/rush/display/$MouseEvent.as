@@ -4,10 +4,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.display {
-	
+package by.blooddy.rush.display {
+
+	import flash.display.InteractiveObject;
 	import flash.events.Event;
-	import flash.events.TransformGestureEvent;
+	import flash.events.MouseEvent;
 
 	use namespace $internal;
 
@@ -17,10 +18,10 @@ package by.blooddy.secret.display {
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					02.10.2011 23:52:19
+	 * @created					02.10.2011 23:26:51
 	 */
-	internal final class $TransformGestureEvent extends TransformGestureEvent implements INativeEvent {
-		
+	internal final class $MouseEvent extends MouseEvent implements INativeEvent {
+
 		//--------------------------------------------------------------------------
 		//
 		//  Internal class methods
@@ -30,8 +31,8 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal static function get(event:TransformGestureEvent):$TransformGestureEvent {
-			return new $TransformGestureEvent( event.type, event.bubbles, event.cancelable, event.phase, event.localX, event.localY, event.scaleX, event.scaleY, event.rotation, event.offsetX, event.offsetY, event.ctrlKey, event.altKey, event.shiftKey );
+		$internal static function get(event:MouseEvent):$MouseEvent {
+			return new $MouseEvent( event.type, event.bubbles, event.cancelable, event.localX, event.localY, event.relatedObject, event.ctrlKey, event.altKey, event.shiftKey, event.buttonDown, event.delta );
 		}
 		
 		//--------------------------------------------------------------------------
@@ -39,14 +40,14 @@ package by.blooddy.secret.display {
 		//  Constructor
 		//
 		//--------------------------------------------------------------------------
-		
+
 		/**
 		 * Constructor
 		 */
-		public function $TransformGestureEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false, phase:String=null, localX:Number=0, localY:Number=0, scaleX:Number=1.0, scaleY:Number=1.0, rotation:Number=0, offsetX:Number=0, offsetY:Number=0, ctrlKey:Boolean=false, altKey:Boolean=false, shiftKey:Boolean=false) {
-			super( type, bubbles, cancelable, phase, localX, localY, scaleX, scaleY, rotation, offsetX, offsetY, ctrlKey, altKey, shiftKey );
+		public function $MouseEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false, localX:Number=NaN, localY:Number=NaN, relatedObject:InteractiveObject=null, ctrlKey:Boolean=false, altKey:Boolean=false, shiftKey:Boolean=false, buttonDown:Boolean=false, delta:int=0) {
+			super( type, bubbles, cancelable, localX, localY, relatedObject, ctrlKey, altKey, shiftKey, buttonDown, delta );
 		}
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Variables
@@ -142,7 +143,7 @@ package by.blooddy.secret.display {
 		 * @private
 		 */
 		public override function clone():Event {
-			return new $TransformGestureEvent( super.type, super.bubbles, super.cancelable, super.phase, super.localX, super.localY, super.scaleX, super.scaleY, super.rotation, super.offsetX, super.offsetY, super.ctrlKey, super.altKey, super.shiftKey );
+			return new $MouseEvent( super.type, super.bubbles, super.cancelable, super.localX, super.localY, super.relatedObject, super.ctrlKey, super.altKey, super.shiftKey, super.buttonDown, super.delta );
 		}
 		
 	}

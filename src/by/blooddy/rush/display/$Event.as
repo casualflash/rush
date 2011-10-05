@@ -4,35 +4,37 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.display {
+package by.blooddy.rush.display {
 	
-	import flash.display.InteractiveObject;
 	import flash.events.Event;
-	import flash.events.TouchEvent;
 
 	use namespace $internal;
 
 	[ExcludeClass]
 	/**
+	 * обёртка вокруг стандартного события флэша
+	 * 
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					02.10.2011 23:41:55
+	 * @created					02.10.2011 20:16:50
+	 * 
+	 * @see						flash.events.Event
 	 */
-	internal class $TouchEvent extends TouchEvent implements INativeEvent {
+	internal final class $Event extends Event implements INativeEvent {
 		
 		//--------------------------------------------------------------------------
 		//
 		//  Internal class methods
 		//
 		//--------------------------------------------------------------------------
-		
+
 		/**
 		 * @private
 		 */
-		$internal static function get(event:TouchEvent):$TouchEvent {
-			return new $TouchEvent( event.type, event.bubbles, event.cancelable, event.touchPointID, event.isPrimaryTouchPoint, event.localX, event.localY, event.sizeX, event.sizeY, event.pressure, event.relatedObject, event.ctrlKey, event.altKey, event.shiftKey );
+		$internal static function get(event:Event):$Event {
+			return new $Event( event.type, event.bubbles, event.cancelable );
 		}
 		
 		//--------------------------------------------------------------------------
@@ -44,10 +46,10 @@ package by.blooddy.secret.display {
 		/**
 		 * Constructor
 		 */
-		public function $TouchEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false, touchPointID:int=0, isPrimaryTouchPoint:Boolean=false, localX:Number=NaN, localY:Number=NaN, sizeX:Number=NaN, sizeY:Number=NaN, pressure:Number=NaN, relatedObject:InteractiveObject=null, ctrlKey:Boolean=false, altKey:Boolean=false, shiftKey:Boolean=false) {
-			super( type, bubbles, cancelable, touchPointID, isPrimaryTouchPoint, localX, localY, sizeX, sizeY, pressure, relatedObject, ctrlKey, altKey, shiftKey );
+		public function $Event(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+			super( type, bubbles, cancelable );
 		}
-
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Variables
@@ -143,7 +145,7 @@ package by.blooddy.secret.display {
 		 * @private
 		 */
 		public override function clone():Event {
-			return new $TouchEvent( super.type, super.bubbles, super.cancelable, super.touchPointID, super.isPrimaryTouchPoint, super.localX, super.localY, super.sizeX, super.sizeY, super.pressure, super.relatedObject, super.ctrlKey, super.altKey, super.shiftKey );
+			return new $Event( super.type, super.bubbles, super.cancelable );
 		}
 		
 	}

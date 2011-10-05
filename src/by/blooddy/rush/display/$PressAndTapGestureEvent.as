@@ -4,7 +4,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.display {
+package by.blooddy.rush.display {
 	
 	import flash.events.Event;
 	import flash.events.PressAndTapGestureEvent;

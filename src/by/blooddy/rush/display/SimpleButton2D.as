@@ -4,16 +4,16 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.display {
+package by.blooddy.rush.display {
 	
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					03.10.2011 2:28:36
+	 * @created					01.10.2011 18:03:23
 	 */
-	public class Shape2D extends DisplayObject2D {
+	public class SimpleButton2D extends NativeDisplayObjectContainer2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -24,7 +24,7 @@ package by.blooddy.secret.display {
 		/**
 		 * Constructor
 		 */
-		public function Shape2D() {
+		public function SimpleButton2D() {
 			super();
 		}
 		
@@ -34,15 +34,19 @@ package by.blooddy.secret.display {
 		//
 		//--------------------------------------------------------------------------
 
-		/**
-		 * @private
-		 */
-		private const _graphics:Graphics2D = new Graphics2D();
+		/*
+		
+		TODO:
+		
+		enabled
+		upState
+		overState
+		downState
+		hitTestState
+		useHandCursor
 
-		public function get graphics():Graphics2D {
-			return this._graphics;
-		}
+		*/
 
 	}
-
+	
 }

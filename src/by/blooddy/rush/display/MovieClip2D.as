@@ -4,21 +4,17 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.events {
-	
-	import by.blooddy.secret.display.NativeEvent;
-	
-	import flash.events.Event;
+package by.blooddy.rush.display {
 	
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 20:21:48
+	 * @created					01.10.2011 18:01:15
 	 */
-	public class Event2D extends NativeEvent {
-
+	public class MovieClip2D extends Sprite2D {
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
@@ -28,9 +24,29 @@ package by.blooddy.secret.events {
 		/**
 		 * Constructor
 		 */
-		public function Event2D(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
-			super( type, bubbles, cancelable );
+		public function MovieClip2D() {
+			super();
 		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+		
+		/*
+		
+		TODO
+		
+		currentFrame
+		currentFrameLabel
+		currentLabel
+		totalFrames
+		isPlaying
+		
+		enabled
+		
+		*/
 		
 		//--------------------------------------------------------------------------
 		//
@@ -38,10 +54,19 @@ package by.blooddy.secret.events {
 		//
 		//--------------------------------------------------------------------------
 
-		public override function clone():Event {
-			return new Event2D( super.type, super.bubbles, super.cancelable );
-		}
+		/*
+		
+		TODO:
+		
+		nextFrame
+		prevFrame
+		play
+		stop
+		gotoAndPlay
+		gotoAndStop
+		
+		*/
 
 	}
-
+	
 }

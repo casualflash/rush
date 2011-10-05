@@ -4,9 +4,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.display {
+package by.blooddy.rush.display {
 
-	import by.blooddy.secret.geom.Transform2D;
+	import by.blooddy.rush.geom.Transform2D;
 	
 	import flash.errors.IllegalOperationError;
 

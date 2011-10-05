@@ -4,11 +4,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.display {
-
+package by.blooddy.rush.display {
+	
 	import flash.display.InteractiveObject;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
 
 	use namespace $internal;
 
@@ -18,10 +18,10 @@ package by.blooddy.secret.display {
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					02.10.2011 23:26:51
+	 * @created					02.10.2011 23:41:55
 	 */
-	internal final class $MouseEvent extends MouseEvent implements INativeEvent {
-
+	internal class $TouchEvent extends TouchEvent implements INativeEvent {
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Internal class methods
@@ -31,8 +31,8 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal static function get(event:MouseEvent):$MouseEvent {
-			return new $MouseEvent( event.type, event.bubbles, event.cancelable, event.localX, event.localY, event.relatedObject, event.ctrlKey, event.altKey, event.shiftKey, event.buttonDown, event.delta );
+		$internal static function get(event:TouchEvent):$TouchEvent {
+			return new $TouchEvent( event.type, event.bubbles, event.cancelable, event.touchPointID, event.isPrimaryTouchPoint, event.localX, event.localY, event.sizeX, event.sizeY, event.pressure, event.relatedObject, event.ctrlKey, event.altKey, event.shiftKey );
 		}
 		
 		//--------------------------------------------------------------------------
@@ -40,12 +40,12 @@ package by.blooddy.secret.display {
 		//  Constructor
 		//
 		//--------------------------------------------------------------------------
-
+		
 		/**
 		 * Constructor
 		 */
-		public function $MouseEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false, localX:Number=NaN, localY:Number=NaN, relatedObject:InteractiveObject=null, ctrlKey:Boolean=false, altKey:Boolean=false, shiftKey:Boolean=false, buttonDown:Boolean=false, delta:int=0) {
-			super( type, bubbles, cancelable, localX, localY, relatedObject, ctrlKey, altKey, shiftKey, buttonDown, delta );
+		public function $TouchEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false, touchPointID:int=0, isPrimaryTouchPoint:Boolean=false, localX:Number=NaN, localY:Number=NaN, sizeX:Number=NaN, sizeY:Number=NaN, pressure:Number=NaN, relatedObject:InteractiveObject=null, ctrlKey:Boolean=false, altKey:Boolean=false, shiftKey:Boolean=false) {
+			super( type, bubbles, cancelable, touchPointID, isPrimaryTouchPoint, localX, localY, sizeX, sizeY, pressure, relatedObject, ctrlKey, altKey, shiftKey );
 		}
 
 		//--------------------------------------------------------------------------
@@ -143,7 +143,7 @@ package by.blooddy.secret.display {
 		 * @private
 		 */
 		public override function clone():Event {
-			return new $MouseEvent( super.type, super.bubbles, super.cancelable, super.localX, super.localY, super.relatedObject, super.ctrlKey, super.altKey, super.shiftKey, super.buttonDown, super.delta );
+			return new $TouchEvent( super.type, super.bubbles, super.cancelable, super.touchPointID, super.isPrimaryTouchPoint, super.localX, super.localY, super.sizeX, super.sizeY, super.pressure, super.relatedObject, super.ctrlKey, super.altKey, super.shiftKey );
 		}
 		
 	}

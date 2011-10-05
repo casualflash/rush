@@ -4,11 +4,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.secret.display {
+package by.blooddy.rush.display {
 	
 	import avmplus.getQualifiedClassName;
 	
-	import by.blooddy.secret.events.Event2D;
+	import by.blooddy.rush.events.Event2D;
 	
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
