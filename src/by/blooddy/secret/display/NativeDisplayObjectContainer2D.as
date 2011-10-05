@@ -65,8 +65,10 @@ package by.blooddy.secret.display {
 			}
 			if ( parent ) {
 				if ( this.$parent !== parent ) {
-					this.$stage = ( parent as DisplayObject2D ).$stage;
+					this.$stage = parent.$stage;
 					this.$parent = parent;
+					this.$parents = parent.$parents.slice();
+					this.$parents.unshift( parent );
 					this.$dispatchEventFunction( new $Event( Event.ADDED, true ) );
 					if ( this.$stage ) {
 						if ( this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
@@ -80,6 +82,7 @@ package by.blooddy.secret.display {
 			} else {
 				this.$stage = null;
 				this.$parent = null;
+				this.$parents = null;
 			}
 		}
 		
@@ -96,6 +99,8 @@ package by.blooddy.secret.display {
 			if ( stage ) {
 				if ( this.$stage !== stage ) {
 					this.$stage = stage;
+					this.$parents = parent.$parents.slice();
+					this.$parents.unshift( parent );
 					if ( this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
 						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
 					}
@@ -105,6 +110,7 @@ package by.blooddy.secret.display {
 				}
 			} else {
 				this.$stage = null;
+				this.$parents = null;
 			}
 		}
 
@@ -166,10 +172,14 @@ package by.blooddy.secret.display {
 		 */
 		$internal function $contains(child:DisplayObject2D):Boolean {
 			// проверим нашу пренадлежность, вдруг зацикливание
-			do {
-				if ( child === this ) return true;
-			} while ( child = child.$parent );
-			return false;
+			if ( child.$parents ) {
+				return child.$parents.indexOf( this ) >= 0;
+			} else {
+				do {
+					if ( child === this ) return true;
+				} while ( child = child.$parent );
+				return false;
+			}
 		}
 
 		/**

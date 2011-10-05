@@ -61,7 +61,7 @@ package by.blooddy.secret.display {
 		//----------------------------------
 		
 		public function get matrix():Matrix {
-			if ( this.$target.$changed & 1 ) this.$target.$updateMatrix();
+			if ( this.$target.$changed & 3 ) this.$target.$updateMatrix();
 			return this.$target.$matrix.clone();
 		}
 
@@ -79,7 +79,7 @@ package by.blooddy.secret.display {
 		//----------------------------------
 		
 		public function get pixelBounds():Rectangle {
-			if ( this.$target.$changed & 2 ) this.$target.$updateBounds();
+			if ( this.$target.$changed & 7 ) this.$target.$updateBounds();
 			return this.$target.$bounds.clone();
 		}
 

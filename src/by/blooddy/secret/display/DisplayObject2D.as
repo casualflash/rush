@@ -110,7 +110,7 @@ package by.blooddy.secret.display {
 		/**
 		 * @private
 		 */
-		$internal var $parents:Vector.<DisplayObject2D>;
+		$internal var $parents:Vector.<NativeDisplayObjectContainer2D>;
 		
 		/**
 		 * @private
@@ -124,8 +124,9 @@ package by.blooddy.secret.display {
 
 		/**
 		 * @private
-		 * 1 - matrix
-		 * 2 - bounds
+		 * 1 - orign
+		 * 2 - matrix
+		 * 4 - bounds
 		 */
 		$internal var $changed:uint = 0;
 		
@@ -138,6 +139,11 @@ package by.blooddy.secret.display {
 		 * @private
 		 */
 		$internal const $matrix:Matrix = new Matrix();
+
+		/**
+		 * @private
+		 */
+		$internal var $concatenatedMatrix:Matrix;
 
 		/**
 		 * @private
@@ -281,7 +287,7 @@ package by.blooddy.secret.display {
 			if ( this.$x == value ) return;
 			this.$x = value;
 			this.$matrix.tx = value;
-			this.$changed |= 2;
+			this.$changed |= 4;
 		}
 
 		//----------------------------------
@@ -304,7 +310,7 @@ package by.blooddy.secret.display {
 			if ( this.$y == value ) return;
 			this.$y = value;
 			this.$matrix.ty = value;
-			this.$changed |= 2;
+			this.$changed |= 4;
 		}
 		
 		//----------------------------------
@@ -326,7 +332,7 @@ package by.blooddy.secret.display {
 		public function set scaleX(value:Number):void {
 			if ( this.$scaleX == value ) return;
 			this.$scaleX = value;
-			this.$changed |= 3;
+			this.$changed |= 6;
 		}
 		
 		//----------------------------------
@@ -348,7 +354,7 @@ package by.blooddy.secret.display {
 		public function set scaleY(value:Number):void {
 			if ( this.$scaleY == value ) return;
 			this.$scaleY = value;
-			this.$changed |= 3;
+			this.$changed |= 6;
 		}
 		
 		//----------------------------------
@@ -370,7 +376,7 @@ package by.blooddy.secret.display {
 		public function set rotation(value:Number):void {
 			if ( this.$rotation == value ) return;
 			this.$rotation = value;
-			this.$changed |= 3;
+			this.$changed |= 6;
 		}
 
 		//----------------------------------
@@ -378,7 +384,7 @@ package by.blooddy.secret.display {
 		//----------------------------------
 		
 		public function get width():Number {
-			if ( this.$changed & 2 ) this.$updateBounds();
+			if ( this.$changed & 7 ) this.$updateBounds();
 			return this.$bounds.width;
 		}
 		
@@ -394,7 +400,7 @@ package by.blooddy.secret.display {
 		//----------------------------------
 		
 		public function get height():Number {
-			if ( this.$changed & 2 ) this.$updateBounds();
+			if ( this.$changed & 7 ) this.$updateBounds();
 			return this.$bounds.height;
 		}
 		
@@ -415,8 +421,6 @@ package by.blooddy.secret.display {
 		
 		TODO
 		
-		globalToLocal
-		localToGlobal
 		globalToLocal3D?
 		local3DToGlobal?
 		
@@ -482,19 +486,53 @@ package by.blooddy.secret.display {
 
 		public function getBounds(targetCoordinateSpace:DisplayObject2D):Rectangle {
 			if ( targetCoordinateSpace ) {
-				throw new IllegalOperationError();
+				var parents:Vector.<NativeDisplayObjectContainer2D>;
+				var c:Boolean = false;
+				// split to 2 ifs
+				parents = ( this.$parents ? this.$parents : this.$getParents() );
+				var m:Matrix = this.$matrix.clone();
+				for each ( var parent:NativeDisplayObjectContainer2D in parents ) {
+					if ( parent.$changed & 3 ) parent.$updateMatrix();
+					m.concat( parent.$matrix );
+					if ( parent == targetCoordinateSpace ) {
+						c = true;
+						break;
+					}
+				}
+				if ( !c ) {
+					parents = ( targetCoordinateSpace.$parents ? targetCoordinateSpace.$parents : targetCoordinateSpace.$getParents() );
+					var l:uint = parents.length;
+					for ( var i:uint = l-1; i>=0; --i ) {
+						parent = parents[ i ];
+						if ( parent.$changed & 3 ) parent.$updateMatrix();
+						m.concat( parent.$matrix );
+					}
+				}
+				// TODO: optimize
+				var topLeft:Point =		this.$matrix.transformPoint( this.$orign.topLeft );
+				var topRight:Point =	this.$matrix.transformPoint( new Point( this.$orign.right, this.$orign.top ) );
+				var bottomRight:Point =	this.$matrix.transformPoint( this.$orign.bottomRight );
+				var bottomLeft:Point =	this.$matrix.transformPoint( new Point( this.$orign.left, this.$orign.bottom ) );
+				var bounds:Rectangle = new Rectangle();
+				bounds.top =		Math.min( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y );
+				bounds.right =		Math.max( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x );
+				bounds.bottom =		Math.max( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y );
+				bounds.left =		Math.min( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x );
+				return bounds;
 			} else {
+				if ( this.$changed & 7 ) this.$updateBounds();
 				return this.$bounds.clone();
 			}
 		}
 
 		public function localToGlobal(point:Point):Point {
-			if ( this.$changed & 1 ) this.$updateMatrix();
+			if ( this.$changed & 3 ) this.$updateMatrix();
 			point = this.$matrix.transformPoint( point );
 			if ( this.$parent ) {
-				if ( !this.$parents ) this.$updateParents();
-				for each ( var parent:DisplayObject2D in this.$parents ) {
-					if ( parent.$changed & 1 ) parent.$updateMatrix();
+				// split to 2 ifs
+				var parents:Vector.<NativeDisplayObjectContainer2D> = ( this.$parents ? this.$parents : this.$getParents() );
+				for each ( var parent:NativeDisplayObjectContainer2D in parents ) {
+					if ( parent.$changed & 3 ) parent.$updateMatrix();
 					point = parent.$matrix.transformPoint( point );
 				}
 			}
@@ -502,15 +540,15 @@ package by.blooddy.secret.display {
 		}
 
 		public function globalToLocal(point:Point):Point {
-			if ( this.$changed & 1 ) this.$updateMatrix();
+			if ( this.$changed & 3 ) this.$updateMatrix();
 			point = this.$matrix.transformPoint( point );
 			if ( this.$parent ) {
-				if ( !this.$parents ) this.$updateParents();
-				var target:DisplayObject2D;
-				var l:uint = this.$parents.length;
+				var parents:Vector.<NativeDisplayObjectContainer2D> = ( this.$parents ? this.$parents : this.$getParents() );
+				var parent:NativeDisplayObjectContainer2D;
+				var l:uint = parents.length;
 				for ( var i:uint = l-1; i>=0; --i ) {
-					target = this.$parents[ i ];
-					if ( parent.$changed & 1 ) parent.$updateMatrix();
+					parent = parents[ i ];
+					if ( parent.$changed & 3 ) parent.$updateMatrix();
 					point = parent.$matrix.transformPoint( point );
 				}
 			}
@@ -523,13 +561,14 @@ package by.blooddy.secret.display {
 		//
 		//--------------------------------------------------------------------------
 
-		$internal function $updateParents():void {
-			this.$parents = new Vector.<DisplayObject2D>();
-			var parent:DisplayObject2D = this.$parent;
+		$internal function $getParents():Vector.<NativeDisplayObjectContainer2D> {
+			var result:Vector.<NativeDisplayObjectContainer2D> = new Vector.<NativeDisplayObjectContainer2D>();
+			var parent:NativeDisplayObjectContainer2D = this.$parent;
 			while ( parent ) {
-				this.$parents.push( parent );
+				result.push( parent );
 				parent = parent.$parent;
 			}
+			return result;
 		}
 
 		/**
@@ -537,14 +576,14 @@ package by.blooddy.secret.display {
 		 */
 		$internal function $dispatchEventFunction(event:Event):Boolean {
 			var canceled:Boolean = false;
-			if ( !this.$parents ) this.$updateParents();
+			var parents:Vector.<NativeDisplayObjectContainer2D> = ( this.$parents ? this.$parents : this.$getParents() );
 			// надо отдиспатчить капчу
 			var type:String = event.type;
-			var target:DisplayObject2D;
+			var target:NativeDisplayObjectContainer2D;
 			var e:Object;
-			var l:uint = this.$parents.length;
+			var l:uint = parents.length;
 			for ( var i:uint = l-1; i>=0; --i ) {
-				target = this.$parents[ i ];
+				target = parents[ i ];
 				if ( target.$capture && target.$capture.hasEventListener( type ) ) {
 					e = event.clone();
 					e.$eventPhase = EventPhase.CAPTURING_PHASE;
@@ -564,7 +603,7 @@ package by.blooddy.secret.display {
 					return canceled;
 				}
 			}
-			for each ( target in this.$parents ) {
+			for each ( target in parents ) {
 				if ( target.hasEventListener( type ) ) {
 					e = event.clone();
 					e.$eventPhase = EventPhase.BUBBLING_PHASE;
@@ -595,14 +634,17 @@ package by.blooddy.secret.display {
 				if ( this.$parent !== parent ) {
 					this.$stage = parent.$stage;
 					this.$parent = parent;
+					this.$parents = parent.$parents.slice();
+					this.$parents.unshift( parent );
 					this.$dispatchEventFunction( new $Event( Event.ADDED, true ) );
 					if ( this.$stage && this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
 						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
 					}
 				}
 			} else {
-				this.$parent = null;
 				this.$stage = null;
+				this.$parent = null;
+				this.$parents = null;
 			}
 		}
 
@@ -616,17 +658,26 @@ package by.blooddy.secret.display {
 			if ( stage ) {
 				if ( this.$stage !== stage ) {
 					this.$stage = stage;
+					this.$parents = parent.$parents.slice();
+					this.$parents.unshift( parent );
 					if ( this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
 						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
 					}
 				}
 			} else {
 				this.$stage = null;
+				this.$parents = null;
 			}
 		}
 
-		$internal function $updateMatrix():void {
+		$internal function $updateOrign():void {
 			this.$changed &= ~1;
+			// override this
+		}
+
+		$internal function $updateMatrix():void {
+			if ( this.$changed & 1 ) this.$updateOrign();
+			this.$changed &= ~2;
 //			this.$matrix.createBox(
 //				this.$scaleX,
 //				this.$scaleY,
@@ -653,8 +704,9 @@ package by.blooddy.secret.display {
 		}
 
 		$internal function $updateBounds():void {
-			if ( this.$changed & 1 ) this.$updateMatrix();
-			this.$changed &= ~2;
+			if ( this.$changed & 3 ) this.$updateMatrix();
+			this.$changed &= ~4;
+			// TODO: optimize
 			var topLeft:Point =		this.$matrix.transformPoint( this.$orign.topLeft );
 			var topRight:Point =	this.$matrix.transformPoint( new Point( this.$orign.right, this.$orign.top ) );
 			var bottomRight:Point =	this.$matrix.transformPoint( this.$orign.bottomRight );
