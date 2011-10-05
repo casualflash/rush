@@ -374,7 +374,7 @@ package by.blooddy.rush.display {
 		 */
 		public function set rotation(value:Number):void {
 			if ( this.$rotation == value ) return;
-			this.$rotation = value;
+			this.$rotation = value % 360;
 			this.$changed |= 6;
 		}
 
@@ -390,8 +390,12 @@ package by.blooddy.rush.display {
 		/**
 		 * @private
 		 */
-		public function set width(value:Number):void {
-			throw new IllegalOperationError( 'TODO' );
+		public function set width(value:Number):void { // TODO: optimize
+			if ( this.$changed & 7 ) this.$updateBounds();
+			if ( this.$bounds.width == value ) return;
+			var scaleX:Number = value / this.$bounds.width;
+			this.$matrix.scale( scaleX, 1 ); // тут видимо накопится погрешность
+			this.$bounds.width = value;
 		}
 		
 		//----------------------------------
@@ -407,7 +411,11 @@ package by.blooddy.rush.display {
 		 * @private
 		 */
 		public function set height(value:Number):void {
-			throw new IllegalOperationError( 'TODO' );
+			if ( this.$changed & 7 ) this.$updateBounds();
+			if ( this.$bounds.height == value ) return;
+			var scaleY:Number = value / this.$bounds.width;
+			this.$matrix.scale( 1, scaleY ); // тут видимо накопится погрешность
+			this.$bounds.height = value;
 		}
 		
 		//----------------------------------
@@ -443,9 +451,6 @@ package by.blooddy.rush.display {
 		
 		globalToLocal3D?
 		local3DToGlobal?
-		
-		hitTestPoint
-		hitTestObject
 		
 		*/
 		
@@ -505,7 +510,7 @@ package by.blooddy.rush.display {
 		}
 
 		public function getBounds(targetCoordinateSpace:Object):Rectangle {
-			if ( targetCoordinateSpace ) {
+			if ( targetCoordinateSpace && targetCoordinateSpace !== this ) {
 
 				var m:Matrix = this.$matrix.clone();
 				var parent:NativeDisplayObjectContainer2D;
@@ -514,22 +519,22 @@ package by.blooddy.rush.display {
 					var c:Boolean = false;
 					if ( this.$parents ) {
 						for each ( parent in this.$parents ) {
-							if ( parent.$changed & 3 ) parent.$updateMatrix();
-							m.concat( parent.$matrix );
 							if ( parent == target2D ) {
 								c = true;
 								break;
 							}
+							if ( parent.$changed & 3 ) parent.$updateMatrix();
+							m.concat( parent.$matrix );
 						}
 					} else {
 						parent = this.$parent;
 						while ( parent ) {
-							if ( parent.$changed & 3 ) parent.$updateMatrix();
-							m.concat( parent.$matrix );
 							if ( parent == target2D ) {
 								c = true;
 								break;
 							}
+							if ( parent.$changed & 3 ) parent.$updateMatrix();
+							m.concat( parent.$matrix );
 							parent = parent.$parent;
 						}
 					}
@@ -580,8 +585,8 @@ package by.blooddy.rush.display {
 
 			} else {
 
-				if ( this.$changed & 7 ) this.$updateBounds();
-				return this.$bounds.clone();
+				if ( this.$changed & 1 ) this.$updateOrign();
+				return this.$orign.clone();
 
 			}
 		}
@@ -784,8 +789,8 @@ package by.blooddy.rush.display {
 			var b:Number = this.$matrix.b;
 			var c:Number = this.$matrix.c;
 			var d:Number = this.$matrix.d;
-			this.$scaleX = ( a < 0 != b < 0 ? -1 : 1 ) * Math.sqrt( a*a + b*b );
-			this.$scaleY = ( c < 0 != d < 0 ? -1 : 1 ) * Math.sqrt( c*c + d*d );
+			this.$scaleX = Math.sqrt( a*a + b*b );
+			this.$scaleY = Math.sqrt( c*c + d*d );
 			this.$rotation = Math.atan2( b, a ) / Math.PI * 180;
 		}
 
