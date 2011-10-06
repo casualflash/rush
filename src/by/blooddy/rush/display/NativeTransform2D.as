@@ -7,6 +7,7 @@
 package by.blooddy.rush.display {
 
 	import flash.geom.Matrix;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 
 	use namespace $internal;
@@ -79,8 +80,19 @@ package by.blooddy.rush.display {
 		//----------------------------------
 		
 		public function get pixelBounds():Rectangle {
-			if ( this.$target.$changed & 7 ) this.$target.$updateBounds();
-			return this.$target.$bounds.clone();
+			var m:Matrix = this.$target.$getConcatedMatrix();
+			var bounds:Rectangle = this.$target.$orign;
+			// TODO: optimize
+			var topLeft:Point =		m.transformPoint( bounds.topLeft );
+			var topRight:Point =	m.transformPoint( new Point( bounds.right, bounds.top ) );
+			var bottomRight:Point =	m.transformPoint( bounds.bottomRight );
+			var bottomLeft:Point =	m.transformPoint( new Point( bounds.left, bounds.bottom ) );
+			bounds = new Rectangle();
+			bounds.top =		Math.round( Math.min( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y ) );
+			bounds.right =		Math.round( Math.max( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x ) );
+			bounds.bottom =		Math.round( Math.max( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y ) );
+			bounds.left =		Math.round( Math.min( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x ) );
+			return bounds;
 		}
 
 		//--------------------------------------------------------------------------

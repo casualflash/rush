@@ -45,6 +45,7 @@ package by.blooddy.rush.display {
 		 */
 		public function Stage2D() {
 			super();
+			this.$parents = new Vector.<NativeDisplayObjectContainer2D>();
 			this.$stage = this;
 		}
 		

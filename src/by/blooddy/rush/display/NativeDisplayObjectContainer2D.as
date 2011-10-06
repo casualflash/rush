@@ -65,10 +65,12 @@ package by.blooddy.rush.display {
 			}
 			if ( parent ) {
 				if ( this.$parent !== parent ) {
-					this.$stage = parent.$stage;
 					this.$parent = parent;
-					this.$parents = parent.$parents.slice();
-					this.$parents.unshift( parent );
+					this.$stage = parent.$stage;
+					if ( this.$stage ) {
+						this.$parents = parent.$parents.slice();
+						this.$parents.unshift( parent );
+					}
 					this.$dispatchEventFunction( new $Event( Event.ADDED, true ) );
 					if ( this.$stage ) {
 						if ( this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
@@ -80,9 +82,9 @@ package by.blooddy.rush.display {
 					}
 				}
 			} else {
+				this.$parents = null;
 				this.$stage = null;
 				this.$parent = null;
-				this.$parents = null;
 			}
 		}
 		

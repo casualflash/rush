@@ -11,6 +11,7 @@ package by.blooddy.rush.display {
 	import by.blooddy.rush.geom.Transform2D;
 	
 	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.display.Shape;
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
@@ -134,7 +135,7 @@ package by.blooddy.rush.display {
 		/**
 		 * @private
 		 */
-		$internal const $orign:Rectangle = new Rectangle();
+		$internal const $orign:Rectangle = new Rectangle( 0, 0, 30, 30 );
 		
 		/**
 		 * @private
@@ -144,12 +145,7 @@ package by.blooddy.rush.display {
 		/**
 		 * @private
 		 */
-		$internal var $concatenatedMatrix:Matrix;
-
-		/**
-		 * @private
-		 */
-		$internal const $bounds:Rectangle = new Rectangle();
+		$internal const $size:Point = new Point();
 
 		//--------------------------------------------------------------------------
 		//
@@ -168,7 +164,6 @@ package by.blooddy.rush.display {
 		opaqueBackground?
 		
 		alpha
-		visible
 		
 		z?
 		scaleZ?
@@ -383,19 +378,18 @@ package by.blooddy.rush.display {
 		//----------------------------------
 		
 		public function get width():Number {
-			if ( this.$changed & 7 ) this.$updateBounds();
-			return this.$bounds.width;
+			if ( this.$changed & 7 ) this.$updateSize();
+			return this.$size.x;
 		}
 		
 		/**
 		 * @private
 		 */
 		public function set width(value:Number):void { // TODO: optimize
-			if ( this.$changed & 7 ) this.$updateBounds();
-			if ( this.$bounds.width == value ) return;
-			var scaleX:Number = value / this.$bounds.width;
-			this.$matrix.scale( scaleX, 1 ); // тут видимо накопится погрешность
-			this.$bounds.width = value;
+			if ( this.$changed & 7 ) this.$updateSize();
+			if ( this.$size.x == value ) return;
+			this.$matrix.scale( value / this.$size.x, 1 ); // тут видимо накопится погрешность
+			this.$size.x = value;
 		}
 		
 		//----------------------------------
@@ -403,19 +397,18 @@ package by.blooddy.rush.display {
 		//----------------------------------
 		
 		public function get height():Number {
-			if ( this.$changed & 7 ) this.$updateBounds();
-			return this.$bounds.height;
+			if ( this.$changed & 7 ) this.$updateSize();
+			return this.$size.y;
 		}
 		
 		/**
 		 * @private
 		 */
 		public function set height(value:Number):void {
-			if ( this.$changed & 7 ) this.$updateBounds();
-			if ( this.$bounds.height == value ) return;
-			var scaleY:Number = value / this.$bounds.width;
-			this.$matrix.scale( 1, scaleY ); // тут видимо накопится погрешность
-			this.$bounds.height = value;
+			if ( this.$changed & 7 ) this.$updateSize();
+			if ( this.$size.y == value ) return;
+			this.$matrix.scale( 1, value / this.$size.y ); // тут видимо накопится погрешность
+			this.$size.y = value;
 		}
 		
 		//----------------------------------
@@ -512,75 +505,72 @@ package by.blooddy.rush.display {
 		public function getBounds(targetCoordinateSpace:Object):Rectangle {
 			if ( targetCoordinateSpace && targetCoordinateSpace !== this ) {
 
-				var m:Matrix = this.$matrix.clone();
-				var parent:NativeDisplayObjectContainer2D;
+				var m:Matrix;
+				var im:Matrix;
 				if ( targetCoordinateSpace is DisplayObject2D ) {
+
 					var target2D:DisplayObject2D = targetCoordinateSpace as DisplayObject2D;
+					var parent2D:NativeDisplayObjectContainer2D;
 					var c:Boolean = false;
+					if ( this.$changed & 3 ) this.$updateMatrix();
+					m = this.$matrix.clone()
 					if ( this.$parents ) {
-						for each ( parent in this.$parents ) {
-							if ( parent == target2D ) {
+						for each ( parent2D in this.$parents ) {
+							if ( parent2D == target2D ) {
 								c = true;
 								break;
 							}
-							if ( parent.$changed & 3 ) parent.$updateMatrix();
-							m.concat( parent.$matrix );
+							if ( parent2D.$changed & 3 ) parent2D.$updateMatrix();
+							m.concat( parent2D.$matrix );
 						}
 					} else {
-						parent = this.$parent;
-						while ( parent ) {
-							if ( parent == target2D ) {
+						parent2D = this.$parent;
+						while ( parent2D ) {
+							if ( parent2D == target2D ) {
 								c = true;
 								break;
 							}
-							if ( parent.$changed & 3 ) parent.$updateMatrix();
-							m.concat( parent.$matrix );
-							parent = parent.$parent;
+							if ( parent2D.$changed & 3 ) parent2D.$updateMatrix();
+							m.concat( parent2D.$matrix );
+							parent2D = parent2D.$parent;
 						}
 					}
 					if ( !c ) {
-						var parents2D:Vector.<NativeDisplayObjectContainer2D> = ( target2D.$parents ? target2D.$parents : target2D.$getParents() );
-						var l:uint = parents2D.length;
-						for ( var i:uint = l-1; i>=0; --i ) {
-							parent = parents2D[ i ];
-							if ( parent.$changed & 3 ) parent.$updateMatrix();
-							m.concat( parent.$matrix );
-						}
+						im = target2D.$getConcatedMatrix();
+						im.invert();
+						m.concat( im );
 					}
 
 				} else if ( targetCoordinateSpace is DisplayObject ) {
 
 					var target:DisplayObject = targetCoordinateSpace as DisplayObject;
-					if ( this.$parents ) {
-						for each ( parent in this.$parents ) {
-							if ( parent.$changed & 3 ) parent.$updateMatrix();
-							m.concat( parent.$matrix );
-						}
-					} else {
-						parent = this.$parent;
-						while ( parent ) {
-							if ( parent.$changed & 3 ) parent.$updateMatrix();
-							m.concat( parent.$matrix );
-							parent = parent.$parent;
-						}
+					m = this.$getConcatedMatrix();
+					im = target.transform.matrix;
+					var parent:DisplayObjectContainer = target.parent;
+					if ( parent ) {
+						do {
+							im.concat( parent.transform.matrix );
+						} while ( parent = parent.parent );
 					}
-					throw new IllegalOperationError( 'TODO' );
+					im.invert();
+					m.concat( im );
 
 				} else {
 
 					throw new TypeError();
 
 				}
+				
 				// TODO: optimize
-				var topLeft:Point =		this.$matrix.transformPoint( this.$orign.topLeft );
-				var topRight:Point =	this.$matrix.transformPoint( new Point( this.$orign.right, this.$orign.top ) );
-				var bottomRight:Point =	this.$matrix.transformPoint( this.$orign.bottomRight );
-				var bottomLeft:Point =	this.$matrix.transformPoint( new Point( this.$orign.left, this.$orign.bottom ) );
+				var topLeft:Point =		m.transformPoint( this.$orign.topLeft );
+				var topRight:Point =	m.transformPoint( new Point( this.$orign.right, this.$orign.top ) );
+				var bottomRight:Point =	m.transformPoint( this.$orign.bottomRight );
+				var bottomLeft:Point =	m.transformPoint( new Point( this.$orign.left, this.$orign.bottom ) );
 				var bounds:Rectangle = new Rectangle();
-				bounds.top =		Math.min( topLeft.y, topRight.y/*, bottomRight.y, bottomLeft.y*/ );
-				bounds.right =		Math.max( /*topLeft.x, */topRight.x, bottomRight.x/*, bottomLeft.x*/ );
-				bounds.bottom =		Math.max( /*topLeft.y, topRight.y, */bottomRight.y, bottomLeft.y );
-				bounds.left =		Math.min( topLeft.x/*, topRight.x, bottomRight.x*/, bottomLeft.x );
+				bounds.top =		Math.min( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y );
+				bounds.right =		Math.max( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x );
+				bounds.bottom =		Math.max( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y );
+				bounds.left =		Math.min( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x );
 				return bounds;
 
 			} else {
@@ -592,50 +582,33 @@ package by.blooddy.rush.display {
 		}
 
 		public function localToGlobal(point:Point):Point {
-			if ( this.$changed & 3 ) this.$updateMatrix();
-			point = this.$matrix.transformPoint( point );
-			if ( this.$parent ) {
-				var parent:NativeDisplayObjectContainer2D;
-				if ( this.$parents ) {
-					for each ( parent in this.$parents ) {
-						if ( parent.$changed & 3 ) parent.$updateMatrix();
-						point = parent.$matrix.transformPoint( point );
-					}
-				} else {
-					parent = this.$parent;
-					while ( parent ) {
-						if ( parent.$changed & 3 ) parent.$updateMatrix();
-						point = parent.$matrix.transformPoint( point );
-						parent = parent.$parent;
-					}
-				}
-			}
-			return point.clone();
+			return this.$getConcatedMatrix().transformPoint( point );
 		}
 
 		public function globalToLocal(point:Point):Point {
-			if ( this.$changed & 3 ) this.$updateMatrix();
-			point = this.$matrix.transformPoint( point );
-			if ( this.$parent ) {
-				var parents:Vector.<NativeDisplayObjectContainer2D> = ( this.$parents ? this.$parents : this.$getParents() );
-				var parent:NativeDisplayObjectContainer2D;
-				var l:uint = parents.length;
-				for ( var i:uint = l-1; i>=0; --i ) {
-					parent = parents[ i ];
-					if ( parent.$changed & 3 ) parent.$updateMatrix();
-					point = parent.$matrix.transformPoint( point );
-				}
-			}
-			return point.clone();
+			var im:Matrix = this.$getConcatedMatrix();
+			im.invert();
+			return im.transformPoint( point );
 		}
 
 		public function hitTestPoint(x:Number, y:Number, shapeFlag:Boolean=false):Boolean {
-			throw new IllegalOperationError( 'TODO' );
+			var im:Matrix = new Matrix();
+			im.invert();
+			var p:Point = im.transformPoint( new Point( x, y ) );
+			if ( this.$orign.containsPoint( p ) ) {
+				if ( shapeFlag ) {
+					return this.$hitTestPoint( p );
+				} else {
+					// TODO: override in DisplayObjectContainer2D
+					return true;
+				}
+			}
 			return false;
 		}
 
 		public function hitTestObject(obj:Object):Boolean {
 			if ( obj is DisplayObject2D ) {
+				var target2D:DisplayObject2D;
 				throw new IllegalOperationError( 'TODO' );
 			} else if ( obj is DisplayObject ) {
 				var target:DisplayObject;
@@ -668,12 +641,12 @@ package by.blooddy.rush.display {
 		$internal function $dispatchEventFunction(event:Event):Boolean {
 			var canceled:Boolean = false;
 			var parents:Vector.<NativeDisplayObjectContainer2D> = ( this.$parents ? this.$parents : this.$getParents() );
-			// надо отдиспатчить капчу
+			// capture
 			var type:String = event.type;
 			var target:NativeDisplayObjectContainer2D;
 			var e:Object;
 			var l:uint = parents.length;
-			for ( var i:uint = l-1; i>=0; --i ) {
+			for ( var i:int = l-1; i>=0; --i ) {
 				target = parents[ i ];
 				if ( target.$capture && target.$capture.hasEventListener( type ) ) {
 					e = event.clone();
@@ -688,12 +661,14 @@ package by.blooddy.rush.display {
 					}
 				}
 			}
+			// at target
 			if ( this.$bubble.hasEventListener( event.type ) ) {
 				canceled = !this.$bubble.dispatchEvent( event );
 				if ( event[ _STOPPED_NAME ] ) {
 					return canceled;
 				}
 			}
+			// bubble
 			for each ( target in parents ) {
 				if ( target.hasEventListener( type ) ) {
 					e = event.clone();
@@ -723,19 +698,21 @@ package by.blooddy.rush.display {
 			}
 			if ( parent ) {
 				if ( this.$parent !== parent ) {
-					this.$stage = parent.$stage;
 					this.$parent = parent;
-					this.$parents = parent.$parents.slice();
-					this.$parents.unshift( parent );
+					this.$stage = parent.$stage;
+					if ( this.$stage ) {
+						this.$parents = parent.$parents.slice();
+						this.$parents.unshift( parent );
+					}
 					this.$dispatchEventFunction( new $Event( Event.ADDED, true ) );
 					if ( this.$stage && this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
 						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
 					}
 				}
 			} else {
+				this.$parents = null;
 				this.$stage = null;
 				this.$parent = null;
-				this.$parents = null;
 			}
 		}
 
@@ -762,8 +739,8 @@ package by.blooddy.rush.display {
 		}
 
 		$internal function $updateOrign():void {
+			// must be overriden
 			this.$changed &= ~1;
-			// override this
 		}
 
 		$internal function $updateMatrix():void {
@@ -794,7 +771,27 @@ package by.blooddy.rush.display {
 			this.$rotation = Math.atan2( b, a ) / Math.PI * 180;
 		}
 
-		$internal function $updateBounds():void {
+		$internal function $getConcatedMatrix():Matrix {
+			if ( this.$changed & 3 ) this.$updateMatrix();
+			var result:Matrix = this.$matrix.clone();
+			var parent:NativeDisplayObjectContainer2D;
+			if ( this.$parents ) {
+				for each ( parent in this.$parents ) {
+					if ( parent.$changed & 3 ) parent.$updateMatrix();
+					result.concat( parent.$matrix );
+				}
+			} else {
+				parent = this.$parent;
+				while ( parent ) {
+					if ( parent.$changed & 3 ) parent.$updateMatrix();
+					result.concat( parent.$matrix );
+					parent = parent.$parent;
+				}
+			}
+			return result;
+		}
+
+		$internal function $updateSize():void {
 			if ( this.$changed & 3 ) this.$updateMatrix();
 			this.$changed &= ~4;
 			// TODO: optimize
@@ -802,10 +799,18 @@ package by.blooddy.rush.display {
 			var topRight:Point =	this.$matrix.transformPoint( new Point( this.$orign.right, this.$orign.top ) );
 			var bottomRight:Point =	this.$matrix.transformPoint( this.$orign.bottomRight );
 			var bottomLeft:Point =	this.$matrix.transformPoint( new Point( this.$orign.left, this.$orign.bottom ) );
-			this.$bounds.top =		Math.min( topLeft.y, topRight.y/*, bottomRight.y, bottomLeft.y*/ );
-			this.$bounds.right =	Math.max( /*topLeft.x, */topRight.x, bottomRight.x/*, bottomLeft.x*/ );
-			this.$bounds.bottom =	Math.max( /*topLeft.y, topRight.y, */bottomRight.y, bottomLeft.y );
-			this.$bounds.left =		Math.min( topLeft.x/*, topRight.x, bottomRight.x*/, bottomLeft.x );
+			var bounds:Rectangle = new Rectangle();
+			bounds.top =		Math.min( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y );
+			bounds.right =		Math.max( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x );
+			bounds.bottom =		Math.max( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y );
+			bounds.left =		Math.min( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x );
+			this.$size.x = bounds.width;
+			this.$size.y = bounds.height;
+		}
+
+		$internal function $hitTestPoint(point:Point):Boolean {
+			// must be overriden
+			return true;
 		}
 
 	}
