@@ -4,7 +4,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.rush.display {
+package com.casualflash.rush.display {
 
 	import flash.geom.Matrix;
 	import flash.geom.Point;

@@ -4,9 +4,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.rush.events {
+package com.casualflash.rush.events {
 	
-	import by.blooddy.rush.display.NativeEvent;
+	import com.casualflash.rush.display.NativeEvent;
 	
 	import flash.events.Event;
 	

@@ -4,72 +4,86 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.rush.display {
-
-	import flash.display.InteractiveObject;
+package com.casualflash.rush.display {
+	
+	import avmplus.getQualifiedClassName;
+	
+	import com.casualflash.rush.events.Event2D;
+	
+	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 
-	use namespace $internal;
-
+	//--------------------------------------
+	//  Excluded APIs
+	//--------------------------------------
+	
+	[Exclude( kind="property", name="$stopped" )]
+	[Exclude( kind="property", name="$canceled" )]
+	[Exclude( kind="property", name="$target" )]
+	[Exclude( kind="property", name="$eventPhase" )]
+	
 	[ExcludeClass]
 	/**
+	 * @private
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					02.10.2011 23:26:51
+	 * @created					01.10.2011 19:44:49
 	 */
-	internal final class $MouseEvent extends MouseEvent implements INativeEvent {
-
+	public class NativeEvent extends Event implements INativeEvent {
+		
 		//--------------------------------------------------------------------------
 		//
-		//  Internal class methods
+		//  Namespaces
 		//
 		//--------------------------------------------------------------------------
 		
-		/**
-		 * @private
-		 */
-		$internal static function get(event:MouseEvent):$MouseEvent {
-			return new $MouseEvent( event.type, event.bubbles, event.cancelable, event.localX, event.localY, event.relatedObject, event.ctrlKey, event.altKey, event.shiftKey, event.buttonDown, event.delta );
-		}
+		use namespace $internal;
 		
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
 		//
 		//--------------------------------------------------------------------------
-
+		
 		/**
-		 * Constructor
+		 * @private
+		 * Constructor.
+		 * 
+		 * @param	type
+		 * @param	bubbles
+		 * @param	cancelable
 		 */
-		public function $MouseEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false, localX:Number=NaN, localY:Number=NaN, relatedObject:InteractiveObject=null, ctrlKey:Boolean=false, altKey:Boolean=false, shiftKey:Boolean=false, buttonDown:Boolean=false, delta:int=0) {
-			super( type, bubbles, cancelable, localX, localY, relatedObject, ctrlKey, altKey, shiftKey, buttonDown, delta );
+		public function NativeEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+			if ( !( this is Event2D ) ) {
+				Error.throwError( IllegalOperationError, 2012, getQualifiedClassName( this ) );
+			}
+			super( type, bubbles, cancelable );
 		}
-
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Variables
 		//
 		//--------------------------------------------------------------------------
-		
+
 		/**
 		 * @private
 		 */
 		$internal var $stopped:Boolean = false;
-		
+
 		/**
 		 * @private
 		 */
 		$internal var $canceled:Boolean = false;
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Overriden properties: Event
 		//
 		//--------------------------------------------------------------------------
-		
+
 		//----------------------------------
 		//  target
 		//----------------------------------
@@ -113,6 +127,15 @@ package by.blooddy.rush.display {
 		/**
 		 * @private
 		 */
+		public override function formatToString(className:String, ...args):String {
+			if ( !className ) className = getQualifiedClassName( this );
+			args.unshift( className );
+			return super.formatToString.apply( this, args );
+		}
+		
+		/**
+		 * @private
+		 */
 		public override function stopImmediatePropagation():void {
 			super.stopImmediatePropagation();
 			this.$stopped = true;
@@ -143,9 +166,17 @@ package by.blooddy.rush.display {
 		 * @private
 		 */
 		public override function clone():Event {
-			return new $MouseEvent( super.type, super.bubbles, super.cancelable, super.localX, super.localY, super.relatedObject, super.ctrlKey, super.altKey, super.shiftKey, super.buttonDown, super.delta );
+			var c:Class = ( this as Object ).constructor as Class;
+			return new c( super.type, super.bubbles, super.cancelable );
+		}
+		
+		/**
+		 * @private
+		 */
+		public override function toString():String {
+			return this.formatToString( null, 'type', 'bubbles', 'cancelable' );
 		}
 		
 	}
-	
+		
 }

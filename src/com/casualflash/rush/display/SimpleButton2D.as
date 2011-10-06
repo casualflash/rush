@@ -4,16 +4,16 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.rush.display {
+package com.casualflash.rush.display {
 	
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 18:01:02
+	 * @created					01.10.2011 18:03:23
 	 */
-	public class Sprite2D extends DisplayObjectContainer2D {
+	public class SimpleButton2D extends NativeDisplayObjectContainer2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -24,7 +24,7 @@ package by.blooddy.rush.display {
 		/**
 		 * Constructor
 		 */
-		public function Sprite2D() {
+		public function SimpleButton2D() {
 			super();
 		}
 		
@@ -37,38 +37,14 @@ package by.blooddy.rush.display {
 		/*
 		
 		TODO:
-
-		buttonMode
+		
+		enabled
+		upState
+		overState
+		downState
+		hitTestState
 		useHandCursor
-		dropTarget
-		hitArea
-		
-		*/
 
-		/**
-		 * @private
-		 */
-		private const _graphics:Graphics2D = new Graphics2D();
-
-		public function get graphics():Graphics2D {
-			return this._graphics;
-		}
-
-		//--------------------------------------------------------------------------
-		//
-		//  Methods
-		//
-		//--------------------------------------------------------------------------
-
-		/*
-		
-		TODO:
-		
-		startDrag?
-		stopDrag?
-		startTouchDrag?
-		stopTouchDrag?
-		
 		*/
 
 	}

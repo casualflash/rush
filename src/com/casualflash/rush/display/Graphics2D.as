@@ -4,50 +4,30 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.rush.display {
-	
+package com.casualflash.rush.display {
+
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 18:01:15
+	 * @created					03.10.2011 2:33:06
 	 */
-	public class MovieClip2D extends Sprite2D {
-		
+	public class Graphics2D {
+
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
 		//
 		//--------------------------------------------------------------------------
-		
+
 		/**
 		 * Constructor
 		 */
-		public function MovieClip2D() {
+		public function Graphics2D() {
 			super();
 		}
-		
-		//--------------------------------------------------------------------------
-		//
-		//  Properties
-		//
-		//--------------------------------------------------------------------------
-		
-		/*
-		
-		TODO
-		
-		currentFrame
-		currentFrameLabel
-		currentLabel
-		totalFrames
-		isPlaying
-		
-		enabled
-		
-		*/
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
@@ -57,13 +37,6 @@ package by.blooddy.rush.display {
 		/*
 		
 		TODO:
-		
-		nextFrame
-		prevFrame
-		play
-		stop
-		gotoAndPlay
-		gotoAndStop
 		
 		*/
 

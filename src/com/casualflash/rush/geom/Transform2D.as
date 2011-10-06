@@ -4,16 +4,19 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.rush.display {
-	
+package com.casualflash.rush.geom {
+
+	import com.casualflash.rush.display.DisplayObject2D;
+	import com.casualflash.rush.display.NativeTransform2D;
+
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					01.10.2011 18:03:23
+	 * @created					01.10.2011 18:45:21
 	 */
-	public class SimpleButton2D extends NativeDisplayObjectContainer2D {
+	public class Transform2D extends NativeTransform2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -24,28 +27,9 @@ package by.blooddy.rush.display {
 		/**
 		 * Constructor
 		 */
-		public function SimpleButton2D() {
-			super();
+		public function Transform2D(target:DisplayObject2D) {
+			super( target );
 		}
-		
-		//--------------------------------------------------------------------------
-		//
-		//  Properties
-		//
-		//--------------------------------------------------------------------------
-
-		/*
-		
-		TODO:
-		
-		enabled
-		upState
-		overState
-		downState
-		hitTestState
-		useHandCursor
-
-		*/
 
 	}
 	

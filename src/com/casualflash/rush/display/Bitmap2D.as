@@ -4,16 +4,19 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.rush.display {
+package com.casualflash.rush.display {
+
+	import flash.display.BitmapData;
+	import flash.display.PixelSnapping;
 	
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					03.10.2011 2:28:36
+	 * @created					01.10.2011 18:01:46
 	 */
-	public class Shape2D extends DisplayObject2D {
+	public class Bitmap2D extends DisplayObject2D {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -24,25 +27,26 @@ package by.blooddy.rush.display {
 		/**
 		 * Constructor
 		 */
-		public function Shape2D() {
+		public function Bitmap2D(bitmapData:BitmapData=null, pixelSnapping:String=PixelSnapping.AUTO, smoothing:Boolean=false) {
 			super();
 		}
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
 		//
 		//--------------------------------------------------------------------------
 
-		/**
-		 * @private
-		 */
-		private const _graphics:Graphics2D = new Graphics2D();
-
-		public function get graphics():Graphics2D {
-			return this._graphics;
-		}
+		/*
+		
+		TODO:
+		
+		bitmapData
+		pixelSnapping
+		smoothing
+		
+		*/
 
 	}
-
+	
 }

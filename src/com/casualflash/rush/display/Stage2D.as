@@ -4,9 +4,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.rush.display {
+package com.casualflash.rush.display {
 
-	import by.blooddy.rush.geom.Transform2D;
+	import com.casualflash.rush.geom.Transform2D;
 	
 	import flash.errors.IllegalOperationError;
 

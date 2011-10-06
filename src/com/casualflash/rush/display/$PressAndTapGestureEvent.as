@@ -4,10 +4,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-package by.blooddy.rush.display {
+package com.casualflash.rush.display {
 	
 	import flash.events.Event;
-	import flash.events.GestureEvent;
+	import flash.events.PressAndTapGestureEvent;
 
 	use namespace $internal;
 
@@ -17,9 +17,9 @@ package by.blooddy.rush.display {
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					02.10.2011 23:59:55
+	 * @created					02.10.2011 23:54:14
 	 */
-	internal final class $GestureEvent extends GestureEvent implements INativeEvent {
+	internal final class $PressAndTapGestureEvent extends PressAndTapGestureEvent implements INativeEvent {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -30,8 +30,8 @@ package by.blooddy.rush.display {
 		/**
 		 * @private
 		 */
-		$internal static function get(event:GestureEvent):$GestureEvent {
-			return new $GestureEvent( event.type, event.bubbles, event.cancelable, event.phase, event.localX, event.localY, event.ctrlKey, event.altKey, event.shiftKey );
+		$internal static function get(event:PressAndTapGestureEvent):$PressAndTapGestureEvent {
+			return new $PressAndTapGestureEvent( event.type, event.bubbles, event.cancelable, event.phase, event.localX, event.localY, event.tapLocalX, event.tapLocalY, event.ctrlKey, event.altKey, event.shiftKey );
 		}
 		
 		//--------------------------------------------------------------------------
@@ -43,10 +43,10 @@ package by.blooddy.rush.display {
 		/**
 		 * Constructor
 		 */
-		public function $GestureEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false, phase:String=null, localX:Number=0, localY:Number=0, ctrlKey:Boolean=false, altKey:Boolean=false, shiftKey:Boolean=false) {
-			super( type, bubbles, cancelable, phase, localX, localY, ctrlKey, altKey, shiftKey );
+		public function $PressAndTapGestureEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false, phase:String=null, localX:Number=0, localY:Number=0, tapLocalX:Number=0, tapLocalY:Number=0, ctrlKey:Boolean=false, altKey:Boolean=false, shiftKey:Boolean=false) {
+			super( type, bubbles, cancelable, phase, localX, localY, tapLocalX, tapLocalY, ctrlKey, altKey, shiftKey );
 		}
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Variables
@@ -108,7 +108,7 @@ package by.blooddy.rush.display {
 		//  Overriden methods: Event
 		//
 		//--------------------------------------------------------------------------
-		
+
 		/**
 		 * @private
 		 */
@@ -116,35 +116,35 @@ package by.blooddy.rush.display {
 			super.stopImmediatePropagation();
 			this.$stopped = true;
 		}
-		
+
 		/**
 		 * @private
 		 */
 		public override function stopPropagation():void {
 			this.$stopped = true;
 		}
-		
+
 		/**
 		 * @private
 		 */
 		public override function preventDefault():void {
 			if ( super.cancelable ) this.$canceled = true;
 		}
-		
+
 		/**
 		 * @private
 		 */
 		public override function isDefaultPrevented():Boolean {
 			return this.$canceled;
 		}
-		
+
 		/**
 		 * @private
 		 */
 		public override function clone():Event {
-			return new $GestureEvent( super.type, super.bubbles, super.cancelable, super.phase, super.localX, super.localY, super.ctrlKey, super.altKey, super.shiftKey );
+			return new $PressAndTapGestureEvent( super.type, super.bubbles, super.cancelable, super.phase, super.localX, super.localY, super.tapLocalX, super.tapLocalY, super.ctrlKey, super.altKey, super.shiftKey );
 		}
-		
+
 	}
-	
+
 }
