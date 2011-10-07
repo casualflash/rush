@@ -52,7 +52,11 @@ package com.casualflash.rush.display {
 		//
 		//--------------------------------------------------------------------------
 
+		/**
+		 * @private
+		 */
 		$internal override function $setParent(parent:NativeDisplayObjectContainer2D):void {
+			this.$changed |= 8;
 			var child:DisplayObject2D;
 			if ( this.$parent ) { // мы потеряли СТАРОГО папу
 				this.$dispatchEventFunction( new $Event( Event.REMOVED, true ) );
@@ -90,6 +94,9 @@ package com.casualflash.rush.display {
 			}
 		}
 		
+		/**
+		 * @private
+		 */
 		$internal override function $setStage(stage:Stage2D):void {
 			var child:DisplayObject2D;
 			if ( this.$stage ) {

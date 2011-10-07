@@ -8,11 +8,12 @@ package com.casualflash.rush.display {
 
 	import com.casualflash.rush.geom.Transform2D;
 	
-	import flash.errors.IllegalOperationError;
 	import flash.display.Stage3D;
-	import flash.events.Event;
-	import flash.events.ErrorEvent;
 	import flash.display3D.Context3D;
+	import flash.errors.IllegalOperationError;
+	import flash.events.ErrorEvent;
+	import flash.events.Event;
+	import flash.geom.Matrix;
 
 	use namespace $internal;
 
@@ -55,6 +56,8 @@ package com.casualflash.rush.display {
 			this._stage3D.addEventListener( Event.CONTEXT3D_CREATE,	this.handler_context3DCreate );
 			this._stage3D.addEventListener( ErrorEvent.ERROR,		this.handler_error );
 			this._stage3D.requestContext3D();
+			this.$stageMatrix.tx = this._stage3D.x;
+			this.$stageMatrix.ty = this._stage3D.y;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -78,6 +81,11 @@ package com.casualflash.rush.display {
 		 * @private
 		 */
 		$internal var $context:Context3D;
+
+		/**
+		 * @private
+		 */
+		$internal const $stageMatrix:Matrix = new Matrix();
 
 		//--------------------------------------------------------------------------
 		//
@@ -138,17 +146,25 @@ package com.casualflash.rush.display {
 		//  x
 		//----------------------------------
 		
+		public override function get x():Number {
+			return this.$stageMatrix.tx;
+		}
+		
 		public override function set x(value:Number):void {
-			super.x = value;
+			this.$stageMatrix.tx = value;
 			this._stage3D.x = value;
 		}
 
 		//----------------------------------
 		//  y
 		//----------------------------------
-		
+
+		public override function get y():Number {
+			return this.$stageMatrix.ty;
+		}
+
 		public override function set y(value:Number):void {
-			super.y = value;
+			this.$stageMatrix.ty = value;
 			this._stage3D.y = value;
 		}
 
@@ -267,10 +283,16 @@ package com.casualflash.rush.display {
 		//
 		//--------------------------------------------------------------------------
 
+		/**
+		 * @private
+		 */
 		$internal override function $setParent(parent:NativeDisplayObjectContainer2D):void {
 			throw new IllegalOperationError();
 		}
 
+		/**
+		 * @private
+		 */
 		$internal override function $setStage(stage:Stage2D):void {
 			throw new IllegalOperationError();
 		}

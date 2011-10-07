@@ -100,6 +100,17 @@ package com.casualflash.rush.display {
 
 		//--------------------------------------------------------------------------
 		//
+		//  Variables
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		private const _concatedMatrix:Matrix = new Matrix();
+		
+		//--------------------------------------------------------------------------
+		//
 		//  Internal variables
 		//
 		//--------------------------------------------------------------------------
@@ -124,13 +135,14 @@ package com.casualflash.rush.display {
 		 * 1 - orign
 		 * 2 - matrix
 		 * 4 - size
+		 * 8 - concatedMatrix
 		 */
 		$internal var $changed:uint = 0;
 		
 		/**
 		 * @private
 		 */
-		$internal const $orign:Rectangle = new Rectangle();
+		$internal const $orign:Rectangle = new Rectangle( 0, 0, 30, 30 );
 		
 		/**
 		 * @private
@@ -276,7 +288,7 @@ package com.casualflash.rush.display {
 			if ( this.$x == value ) return;
 			this.$x = value;
 			this.$matrix.tx = value;
-			this.$changed |= 4;
+			this.$changed |= 8;
 		}
 
 		//----------------------------------
@@ -299,7 +311,7 @@ package com.casualflash.rush.display {
 			if ( this.$y == value ) return;
 			this.$y = value;
 			this.$matrix.ty = value;
-			this.$changed |= 4;
+			this.$changed |= 8;
 		}
 		
 		//----------------------------------
@@ -321,7 +333,7 @@ package com.casualflash.rush.display {
 		public function set scaleX(value:Number):void {
 			if ( this.$scaleX == value ) return;
 			this.$scaleX = value;
-			this.$changed |= 6;
+			this.$changed |= 14;
 		}
 		
 		//----------------------------------
@@ -343,7 +355,7 @@ package com.casualflash.rush.display {
 		public function set scaleY(value:Number):void {
 			if ( this.$scaleY == value ) return;
 			this.$scaleY = value;
-			this.$changed |= 6;
+			this.$changed |= 14;
 		}
 		
 		//----------------------------------
@@ -365,7 +377,7 @@ package com.casualflash.rush.display {
 		public function set rotation(value:Number):void {
 			if ( this.$rotation == value ) return;
 			this.$rotation = value % 360;
-			this.$changed |= 6;
+			this.$changed |= 14;
 		}
 
 		//----------------------------------
@@ -498,25 +510,30 @@ package com.casualflash.rush.display {
 		}
 
 		public function getBounds(targetCoordinateSpace:Object):Rectangle {
+			if ( this.$changed & 1 ) this.$updateOrign();
 			if ( targetCoordinateSpace && targetCoordinateSpace !== this ) {
 
-				var m:Matrix = this.$getConcatedMatrix(); // TODO: предположим, что матрицы закэшированы
+				var m:Matrix = this.$getConcatedMatrix().clone(); // TODO: предположим, что матрицы закэшированы
 				var im:Matrix;
 
 				if ( targetCoordinateSpace is DisplayObject2D ) {
 
-					im = ( targetCoordinateSpace as DisplayObject2D ).$getConcatedMatrix();
+					var target2D:DisplayObject2D = targetCoordinateSpace as DisplayObject2D;
+					im = target2D.$getConcatedMatrix().clone();
+					if ( this.$stage !== target2D.$stage ) {
+						if ( this.$stage ) m.concat( this.$stage.$stageMatrix );
+						if ( target2D.$stage ) im.concat( target2D.$stage.$stageMatrix );
+					}
 
 				} else if ( targetCoordinateSpace is DisplayObject ) {
 
-					im = target.transform.matrix;
 					var target:DisplayObject = targetCoordinateSpace as DisplayObject;
-					var parent:DisplayObjectContainer = target.parent;
-					if ( parent ) {
-						do {
-							im.concat( parent.transform.matrix );
-						} while ( parent = parent.parent );
+					im = target.transform.matrix;
+					while ( target = target.parent ) {
+						im.concat( target.transform.matrix );
 					}
+
+					if ( this.$stage ) m.concat( this.$stage.$stageMatrix );
 
 				} else {
 
@@ -541,24 +558,30 @@ package com.casualflash.rush.display {
 
 			} else {
 
-				if ( this.$changed & 1 ) this.$updateOrign();
 				return this.$orign.clone();
 
 			}
 		}
 
 		public function localToGlobal(point:Point):Point {
-			return this.$getConcatedMatrix().transformPoint( point );
+			var m:Matrix = this.$getConcatedMatrix();
+			if ( this.$stage ) {
+				m = m.clone();
+				m.concat( this.$stage.$stageMatrix );
+			}
+			return m.transformPoint( point );
 		}
 
 		public function globalToLocal(point:Point):Point {
-			var im:Matrix = this.$getConcatedMatrix();
+			var im:Matrix = this.$getConcatedMatrix().clone();
+			if ( this.$stage ) im.concat( this.$stage.$stageMatrix );
 			im.invert();
 			return im.transformPoint( point );
 		}
 
 		public function hitTestPoint(x:Number, y:Number, shapeFlag:Boolean=false):Boolean {
-			var im:Matrix = new Matrix();
+			var im:Matrix = this.$getConcatedMatrix().clone();
+			if ( this.$stage ) im.concat( this.$stage.$stageMatrix );
 			im.invert();
 			var p:Point = im.transformPoint( new Point( x, y ) );
 			if ( this.$orign.containsPoint( p ) ) {
@@ -586,6 +609,9 @@ package com.casualflash.rush.display {
 		//
 		//--------------------------------------------------------------------------
 
+		/**
+		 * @private
+		 */
 		$internal function $getParents():Vector.<NativeDisplayObjectContainer2D> {
 			var result:Vector.<NativeDisplayObjectContainer2D> = new Vector.<NativeDisplayObjectContainer2D>();
 			var parent:NativeDisplayObjectContainer2D = this.$parent;
@@ -602,10 +628,10 @@ package com.casualflash.rush.display {
 		$internal function $dispatchEventFunction(event:Event):Boolean {
 			var canceled:Boolean = false;
 			var parents:Vector.<NativeDisplayObjectContainer2D> = ( this.$parents ? this.$parents : this.$getParents() );
-			// capture
 			var type:String = event.type;
 			var target:NativeDisplayObjectContainer2D;
 			var e:Object;
+			// capture
 			var l:uint = parents.length;
 			for ( var i:int = l-1; i>=0; --i ) {
 				target = parents[ i ];
@@ -623,7 +649,7 @@ package com.casualflash.rush.display {
 				}
 			}
 			// at target
-			if ( this.$bubble.hasEventListener( event.type ) ) {
+			if ( this.$bubble.hasEventListener( type ) ) {
 				canceled = !this.$bubble.dispatchEvent( event );
 				if ( ( event as Object ).$stopped ) {
 					return canceled;
@@ -631,7 +657,7 @@ package com.casualflash.rush.display {
 			}
 			// bubble
 			for each ( target in parents ) {
-				if ( target.hasEventListener( type ) ) {
+				if ( target.$bubble.hasEventListener( type ) ) {
 					e = event.clone();
 					e.$eventPhase = EventPhase.BUBBLING_PHASE;
 					e.$target = this;
@@ -651,6 +677,7 @@ package com.casualflash.rush.display {
 		 * @private
 		 */
 		$internal function $setParent(parent:NativeDisplayObjectContainer2D):void {
+			this.$changed |= 8;
 			if ( this.$parent ) {
 				this.$dispatchEventFunction( new $Event( Event.REMOVED, true ) );
 				if ( this.$stage  && this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
@@ -699,13 +726,18 @@ package com.casualflash.rush.display {
 			}
 		}
 
+		/**
+		 * @private
+		 */
 		$internal function $updateOrign():void {
 			// must be overriden
 			this.$changed &= ~1;
 		}
 
+		/**
+		 * @private
+		 */
 		$internal function $updateMatrix():void {
-			if ( this.$changed & 1 ) this.$updateOrign();
 			this.$changed &= ~2;
 //			this.$matrix.createBox(
 //				this.$scaleX,
@@ -720,6 +752,9 @@ package com.casualflash.rush.display {
 			this.$matrix.translate( this.$x, this.$y );
 		}
 
+		/**
+		 * @private
+		 */
 		$internal function $updateMatrixDerivatives():void {
 			this.$x = this.$matrix.tx;
 			this.$y = this.$matrix.ty;
@@ -732,28 +767,43 @@ package com.casualflash.rush.display {
 			this.$rotation = Math.atan2( b, a ) / Math.PI * 180;
 		}
 
+		/**
+		 * @private
+		 */
 		$internal function $getConcatedMatrix():Matrix { // матрицы можно кэшировать у парентов
-			if ( this.$changed & 3 ) this.$updateMatrix();
-			var result:Matrix = this.$matrix.clone();
-			var parent:NativeDisplayObjectContainer2D;
-			if ( this.$parents ) {
-				for each ( parent in this.$parents ) {
-					if ( parent.$changed & 3 ) parent.$updateMatrix();
-					result.concat( parent.$matrix );
-				}
-			} else {
-				parent = this.$parent;
-				while ( parent ) {
-					if ( parent.$changed & 3 ) parent.$updateMatrix();
-					result.concat( parent.$matrix );
-					parent = parent.$parent;
+			var changed:Boolean = false;
+			var parents:Vector.<NativeDisplayObjectContainer2D> = ( this.$parents ? this.$parents : this.$getParents() );
+			var parent:DisplayObject2D;
+			var l:uint = parents.length;
+			for ( var i:int = 0; i>=0; --i ) {
+				parent = parents[ i ];
+				if ( changed || parent.$changed & 10 ) {
+					changed = true;
+					parent.$changed &= ~8;
+					if ( parent.$changed & 2 ) parent.$updateMatrix();
+					parent._concatedMatrix.copyFrom( parent.$matrix );
+					if ( parent.$parent ) {
+						parent._concatedMatrix.concat( ( parent.$parent as DisplayObject2D )._concatedMatrix );
+					}
 				}
 			}
-			return result;
+			if ( changed || this.$changed & 8 ) {
+				this.$changed &= ~8;
+				if ( this.$changed & 2 ) this.$updateMatrix();
+				this._concatedMatrix.copyFrom( this.$matrix );
+				if ( this.$parent ) {
+					this._concatedMatrix.concat( ( this.$parent as DisplayObject2D )._concatedMatrix );
+				}
+			}
+			return this._concatedMatrix;
 		}
 
+		/**
+		 * @private
+		 */
 		$internal function $updateSize():void {
-			if ( this.$changed & 3 ) this.$updateMatrix();
+			if ( this.$changed & 1 ) this.$updateOrign();
+			if ( this.$changed & 2 ) this.$updateMatrix();
 			this.$changed &= ~4;
 			// TODO: optimize
 			var topLeft:Point =		this.$matrix.transformPoint( this.$orign.topLeft );
@@ -769,6 +819,9 @@ package com.casualflash.rush.display {
 			this.$size.y = bounds.height;
 		}
 
+		/**
+		 * @private
+		 */
 		$internal function $hitTestPoint(point:Point, shapeFlag:Boolean=false):Boolean {
 			// must be overriden
 			return true;
