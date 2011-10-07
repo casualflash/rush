@@ -80,11 +80,6 @@ package com.casualflash.rush.display {
 		_BROADCAST_EVENTS[ Event.EXIT_FRAME ] = true;
 		_BROADCAST_EVENTS[ Event.FRAME_CONSTRUCTED ] = true;
 
-		/**
-		 * @private
-		 */
-		private static const _STOPPED_NAME:QName = new QName( $internal, '$stopped' );
-
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
@@ -135,7 +130,7 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		$internal const $orign:Rectangle = new Rectangle( 0, 0, 30, 30 );
+		$internal const $orign:Rectangle = new Rectangle();
 		
 		/**
 		 * @private
