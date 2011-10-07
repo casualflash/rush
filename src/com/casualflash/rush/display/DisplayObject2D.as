@@ -505,62 +505,33 @@ package com.casualflash.rush.display {
 		public function getBounds(targetCoordinateSpace:Object):Rectangle {
 			if ( targetCoordinateSpace && targetCoordinateSpace !== this ) {
 
-				var m:Matrix;
+				var m:Matrix = this.$getConcatedMatrix(); // TODO: предположим, что матрицы закэшированы
 				var im:Matrix;
+
 				if ( targetCoordinateSpace is DisplayObject2D ) {
 
-					var target2D:DisplayObject2D = targetCoordinateSpace as DisplayObject2D;
-					var parent2D:NativeDisplayObjectContainer2D;
-					var c:Boolean = false;
-					if ( this.$changed & 3 ) this.$updateMatrix();
-					m = this.$matrix.clone()
-					if ( this.$parents ) {
-						for each ( parent2D in this.$parents ) {
-							if ( parent2D == target2D ) {
-								c = true;
-								break;
-							}
-							if ( parent2D.$changed & 3 ) parent2D.$updateMatrix();
-							m.concat( parent2D.$matrix );
-						}
-					} else {
-						parent2D = this.$parent;
-						while ( parent2D ) {
-							if ( parent2D == target2D ) {
-								c = true;
-								break;
-							}
-							if ( parent2D.$changed & 3 ) parent2D.$updateMatrix();
-							m.concat( parent2D.$matrix );
-							parent2D = parent2D.$parent;
-						}
-					}
-					if ( !c ) {
-						im = target2D.$getConcatedMatrix();
-						im.invert();
-						m.concat( im );
-					}
+					im = ( targetCoordinateSpace as DisplayObject2D ).$getConcatedMatrix();
 
 				} else if ( targetCoordinateSpace is DisplayObject ) {
 
-					var target:DisplayObject = targetCoordinateSpace as DisplayObject;
-					m = this.$getConcatedMatrix();
 					im = target.transform.matrix;
+					var target:DisplayObject = targetCoordinateSpace as DisplayObject;
 					var parent:DisplayObjectContainer = target.parent;
 					if ( parent ) {
 						do {
 							im.concat( parent.transform.matrix );
 						} while ( parent = parent.parent );
 					}
-					im.invert();
-					m.concat( im );
 
 				} else {
 
 					throw new TypeError();
 
 				}
-				
+
+				im.invert();
+				m.concat( im );
+
 				// TODO: optimize
 				var topLeft:Point =		m.transformPoint( this.$orign.topLeft );
 				var topRight:Point =	m.transformPoint( new Point( this.$orign.right, this.$orign.top ) );
@@ -766,7 +737,7 @@ package com.casualflash.rush.display {
 			this.$rotation = Math.atan2( b, a ) / Math.PI * 180;
 		}
 
-		$internal function $getConcatedMatrix():Matrix {
+		$internal function $getConcatedMatrix():Matrix { // матрицы можно кэшировать у парентов
 			if ( this.$changed & 3 ) this.$updateMatrix();
 			var result:Matrix = this.$matrix.clone();
 			var parent:NativeDisplayObjectContainer2D;
