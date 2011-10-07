@@ -404,7 +404,7 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		public function set height(value:Number):void {
+		public function set height(value:Number):void { // TODO: optimize
 			if ( this.$changed & 7 ) this.$updateSize();
 			if ( this.$size.y == value ) return;
 			this.$matrix.scale( 1, value / this.$size.y ); // тут видимо накопится погрешность
@@ -466,7 +466,7 @@ package com.casualflash.rush.display {
 				}
 			} else {
 				this.$bubble.removeEventListener( type, listener, false );
-				if ( type in _BROADCAST_EVENTS && this.$bubble.hasEventListener( type ) ) {
+				if ( type in _BROADCAST_EVENTS && !this.$bubble.hasEventListener( type ) ) {
 					_BROADCASTER.removeEventListener( type, this.$bubble.dispatchEvent );
 				}
 			}
@@ -659,7 +659,7 @@ package com.casualflash.rush.display {
 			// at target
 			if ( this.$bubble.hasEventListener( event.type ) ) {
 				canceled = !this.$bubble.dispatchEvent( event );
-				if ( event[ _STOPPED_NAME ] ) {
+				if ( ( event as Object ).$stopped ) {
 					return canceled;
 				}
 			}
