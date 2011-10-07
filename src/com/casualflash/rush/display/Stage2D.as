@@ -9,6 +9,10 @@ package com.casualflash.rush.display {
 	import com.casualflash.rush.geom.Transform2D;
 	
 	import flash.errors.IllegalOperationError;
+	import flash.display.Stage3D;
+	import flash.events.Event;
+	import flash.events.ErrorEvent;
+	import flash.display3D.Context3D;
 
 	use namespace $internal;
 
@@ -43,12 +47,38 @@ package com.casualflash.rush.display {
 		/**
 		 * Constructor
 		 */
-		public function Stage2D() {
+		public function Stage2D(stage3D:Stage3D) {
 			super();
 			this.$parents = new Vector.<NativeDisplayObjectContainer2D>();
 			this.$stage = this;
+			this._stage3D = stage3D;
+			this._stage3D.addEventListener( Event.CONTEXT3D_CREATE,	this.handler_context3DCreate );
+			this._stage3D.addEventListener( ErrorEvent.ERROR,		this.handler_error );
+			this._stage3D.requestContext3D();
 		}
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Variables
+		//
+		//--------------------------------------------------------------------------
+
+		/**
+		 * @private
+		 */
+		private var _stage3D:Stage3D;
+
+		//--------------------------------------------------------------------------
+		//
+		//  Internal variables
+		//
+		//--------------------------------------------------------------------------
+
+		/**
+		 * @private
+		 */
+		$internal var $context:Context3D;
+
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -65,10 +95,6 @@ package com.casualflash.rush.display {
 		frameRate?
 		scaleMode?
 
-		stageHeight
-		stageWidth
-		
-		
 		*/
 		
 		/*
@@ -85,116 +111,142 @@ package com.casualflash.rush.display {
 		mouseEnabled
 		name
 		opaqueBackground
-		rotation
 		scale9Grid
-		scaleX
-		scaleY
 		scrollRect
 		tabEnabled
 		tabIndex
-		transform
-		visible
-		x
-		y 
 		
 		*/
+
+		//----------------------------------
+		//  name
+		//----------------------------------
 		
 		public override function set name(value:String):void{
 			Error.throwError( IllegalOperationError, 2071 );
 		}
 
-//		public override function set mask(value:DisplayObject):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set visible(value:Boolean):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set x(value:Number):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set y(value:Number):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set z(value:Number):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set scaleX(value:Number):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set scaleY(value:Number):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set scaleZ(value:Number):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set rotation(value:Number):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set rotationX(value:Number):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set rotationY(value:Number):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set rotationZ(value:Number):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set alpha(value:Number):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set cacheAsBitmap(value:Boolean):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set opaqueBackground(value:Object):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set scrollRect(value:Rectangle):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set filters(value:Array):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set blendMode(value:String):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-
+		//----------------------------------
+		//  transform
+		//----------------------------------
+		
 		public override function set transform(value:Transform2D):void{
 			Error.throwError( IllegalOperationError, 2071 );
 		}
+		
+		//----------------------------------
+		//  x
+		//----------------------------------
+		
+		public override function set x(value:Number):void {
+			super.x = value;
+			this._stage3D.x = value;
+		}
 
-//		public override function set tabEnabled(value:Boolean):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set tabIndex(value:int):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set focusRect(value:Object):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
-//
-//		public override function set mouseEnabled(value:Boolean):void{
-//			Error.throwError( IllegalOperationError, 2071 );
-//		}
+		//----------------------------------
+		//  y
+		//----------------------------------
+		
+		public override function set y(value:Number):void {
+			super.y = value;
+			this._stage3D.y = value;
+		}
 
+		//----------------------------------
+		//  visible
+		//----------------------------------
+		
+		public override function set visible(value:Boolean):void {
+			super.visible = value;
+			this._stage3D.visible = value;
+		}
+
+		//----------------------------------
+		//  stageWidth
+		//----------------------------------
+
+		/**
+		 * @private
+		 */
+		private var _stageWidth:Number = 50;
+
+		public function get stageWidth():Number {
+			return this._stageWidth;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set stageWidth(value:Number):void {
+			// TODO: errors
+			if ( this._stageWidth == value ) return;
+			this._stageWidth = value;
+			throw new IllegalOperationError( 'TODO: configureBackBuffer' );
+		}
+
+		//----------------------------------
+		//  stageHeight
+		//----------------------------------
+		
+		/**
+		 * @private
+		 */
+		private var _stageHeight:Number = 50;
+		
+		public function get stageHeight():Number {
+			return this._stageHeight;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set stageHeight(value:Number):void {
+			// TODO: errors
+			if ( this._stageHeight == value ) return;
+			this._stageHeight = value;
+			throw new IllegalOperationError( 'TODO: configureBackBuffer' );
+		}
+
+		//----------------------------------
+		//  scaleX
+		//----------------------------------
+		
+		public override function set scaleX(value:Number):void{
+			Error.throwError( IllegalOperationError, 2071 );
+		}
+
+		//----------------------------------
+		//  scaleY
+		//----------------------------------
+		
+		public override function set scaleY(value:Number):void{
+			Error.throwError( IllegalOperationError, 2071 );
+		}
+
+		//----------------------------------
+		//  transform
+		//----------------------------------
+		
+		public override function set rotation(value:Number):void{
+			Error.throwError( IllegalOperationError, 2071 );
+		}
+
+		//----------------------------------
+		//  width
+		//----------------------------------
+		
+		public override function set width(value:Number):void{
+			Error.throwError( IllegalOperationError, 2071 );
+		}
+		
+		//----------------------------------
+		//  height
+		//----------------------------------
+		
+		public override function set height(value:Number):void{
+			Error.throwError( IllegalOperationError, 2071 );
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
@@ -223,6 +275,31 @@ package com.casualflash.rush.display {
 			throw new IllegalOperationError();
 		}
 
+		//--------------------------------------------------------------------------
+		//
+		//  Event handlers
+		//
+		//--------------------------------------------------------------------------
+
+		/**
+		 * @private
+		 */
+		private function handler_context3DCreate(event:Event):void {
+			this._stage3D.removeEventListener( Event.CONTEXT3D_CREATE, this.handler_context3DCreate );
+			this._stage3D.removeEventListener( ErrorEvent.ERROR, this.handler_error );
+			this.$context = this._stage3D.context3D;
+			this.$context.configureBackBuffer( this._stageWidth, this._stageHeight, 2, true ); // TODO: configure antiAlias & enableDepthAndStencil
+		}
+
+		/**
+		 * @private
+		 */
+		private function handler_error(event:Event):void {
+			this._stage3D.removeEventListener( Event.CONTEXT3D_CREATE, this.handler_context3DCreate );
+			this._stage3D.removeEventListener( ErrorEvent.ERROR, this.handler_error );
+			super.dispatchEvent( event ); // TODO
+		}
+		
 	}
 	
 }
