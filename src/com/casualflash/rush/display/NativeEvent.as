@@ -64,63 +64,15 @@ package com.casualflash.rush.display {
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Variables
+		//  Includes
 		//
 		//--------------------------------------------------------------------------
-
-		/**
-		 * @private
-		 */
-		$internal var $stopped:Boolean = false;
-
-		/**
-		 * @private
-		 */
-		$internal var $canceled:Boolean = false;
-
-		//--------------------------------------------------------------------------
-		//
-		//  Overriden properties: Event
-		//
-		//--------------------------------------------------------------------------
-
-		//----------------------------------
-		//  target
-		//----------------------------------
 		
-		/**
-		 * @private
-		 */
-		$internal var $target:Object;
-		
-		/**
-		 * @private
-		 * Сцылка на таргет.
-		 */
-		public override function get target():Object {
-			return this.$target || super.target;
-		}
-		
-		//----------------------------------
-		//  eventPhase
-		//----------------------------------
-		
-		/**
-		 * @private
-		 */
-		$internal var $eventPhase:uint;
-		
-		/**
-		 * @private
-		 * Фаза.
-		 */
-		public override function get eventPhase():uint {
-			return this.$eventPhase || super.eventPhase;
-		}
+		include 'event_base.as';
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Overriden methods: Event
+		//  Methods
 		//
 		//--------------------------------------------------------------------------
 		
@@ -131,35 +83,6 @@ package com.casualflash.rush.display {
 			if ( !className ) className = getQualifiedClassName( this );
 			args.unshift( className );
 			return super.formatToString.apply( this, args );
-		}
-		
-		/**
-		 * @private
-		 */
-		public override function stopImmediatePropagation():void {
-			super.stopImmediatePropagation();
-			this.$stopped = true;
-		}
-		
-		/**
-		 * @private
-		 */
-		public override function stopPropagation():void {
-			this.$stopped = true;
-		}
-		
-		/**
-		 * @private
-		 */
-		public override function preventDefault():void {
-			if ( super.cancelable ) this.$canceled = true;
-		}
-		
-		/**
-		 * @private
-		 */
-		public override function isDefaultPrevented():Boolean {
-			return this.$canceled;
 		}
 		
 		/**
