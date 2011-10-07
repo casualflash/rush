@@ -128,7 +128,7 @@ package com.casualflash.rush.display {
 		 * @private
 		 * 1 - orign
 		 * 2 - matrix
-		 * 4 - bounds
+		 * 4 - size
 		 */
 		$internal var $changed:uint = 0;
 		
@@ -596,12 +596,7 @@ package com.casualflash.rush.display {
 			im.invert();
 			var p:Point = im.transformPoint( new Point( x, y ) );
 			if ( this.$orign.containsPoint( p ) ) {
-				if ( shapeFlag ) {
-					return this.$hitTestPoint( p );
-				} else {
-					// TODO: override in DisplayObjectContainer2D
-					return true;
-				}
+				return this.$hitTestPoint( p, shapeFlag );
 			}
 			return false;
 		}
@@ -808,7 +803,7 @@ package com.casualflash.rush.display {
 			this.$size.y = bounds.height;
 		}
 
-		$internal function $hitTestPoint(point:Point):Boolean {
+		$internal function $hitTestPoint(point:Point, shapeFlag:Boolean=false):Boolean {
 			// must be overriden
 			return true;
 		}

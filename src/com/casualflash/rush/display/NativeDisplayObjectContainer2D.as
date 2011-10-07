@@ -7,6 +7,8 @@
 package com.casualflash.rush.display {
 
 	import flash.events.Event;
+	import flash.geom.Point;
+	import flash.geom.Matrix;
 
 	use namespace $internal;
 
@@ -42,7 +44,7 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		$internal const _list:Vector.<DisplayObject2D> = new Vector.<DisplayObject2D>();
+		$internal const $list:Vector.<DisplayObject2D> = new Vector.<DisplayObject2D>();
 		
 		//--------------------------------------------------------------------------
 		//
@@ -58,7 +60,7 @@ package com.casualflash.rush.display {
 					if ( this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
 						this.$bubble.dispatchEvent( new Event( Event.REMOVED_FROM_STAGE ) );
 					}
-					for each ( child in this._list ) {
+					for each ( child in this.$list ) {
 						child.$setStage( null );
 					}
 				}
@@ -76,7 +78,7 @@ package com.casualflash.rush.display {
 						if ( this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
 							this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
 						}
-						for each ( child in this._list ) {
+						for each ( child in this.$list ) {
 							child.$setStage( this.$stage );
 						}
 					}
@@ -94,7 +96,7 @@ package com.casualflash.rush.display {
 				if ( this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
 					this.$bubble.dispatchEvent( new Event( Event.REMOVED_FROM_STAGE ) );
 				}
-				for each ( child in this._list ) {
+				for each ( child in this.$list ) {
 					child.$setStage( null );
 				}
 			}
@@ -106,7 +108,7 @@ package com.casualflash.rush.display {
 					if ( this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
 						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
 					}
-					for each ( child in this._list ) {
+					for each ( child in this.$list ) {
 						child.$setStage( this.$stage );
 					}
 				}
@@ -123,7 +125,7 @@ package com.casualflash.rush.display {
 			// проверим наличие передоваемого объекта
 			if ( !child ) Error.throwError( TypeError, 2007, 'child' );
 			// проверим рэндж
-			if ( index < 0 || index > this._list.length ) Error.throwError( RangeError, 2006 );
+			if ( index < 0 || index > this.$list.length ) Error.throwError( RangeError, 2006 );
 			// проверим не мыли это?
 			if ( child === this ) Error.throwError( ArgumentError, 2024 );
 			// если есть родитель, то надо его отуда удалить
@@ -145,7 +147,7 @@ package com.casualflash.rush.display {
 					Error.throwError( ArgumentError, 2150 );
 				}
 				// добавляем
-				this._list.splice( index, 0, child );
+				this.$list.splice( index, 0, child );
 				// обновляем
 				child.$setParent( this );
 			}
@@ -159,10 +161,10 @@ package com.casualflash.rush.display {
 		$internal function $removeChildAt(index:int, strict:Boolean=true):DisplayObject2D {
 			if ( strict ) {
 				// проверим рэндж
-				if ( index < 0 || index > this._list.length ) Error.throwError( RangeError, 2006 );
+				if ( index < 0 || index > this.$list.length ) Error.throwError( RangeError, 2006 );
 			}
 			// удалим
-			var child:DisplayObject2D = this._list.splice( index, 1 )[ 0 ];
+			var child:DisplayObject2D = this.$list.splice( index, 1 )[ 0 ];
 			// обновим
 			child.$setParent( null );
 			// вернём
@@ -189,8 +191,8 @@ package com.casualflash.rush.display {
 		 */
 		$internal function $getChildAt(index:int):DisplayObject2D {
 			// проверим рэндж
-			if ( index<0 || index>this._list.length ) Error.throwError( RangeError, 2006 );
-			return this._list[ index ];
+			if ( index<0 || index>this.$list.length ) Error.throwError( RangeError, 2006 );
+			return this.$list[ index ];
 		}
 		
 		/**
@@ -202,7 +204,7 @@ package com.casualflash.rush.display {
 				if ( !child || child.$parent !== this ) Error.throwError( ArgumentError, 2025 );
 			}
 			// ищем
-			return this._list.indexOf( child );
+			return this.$list.indexOf( child );
 		}
 		
 		/**
@@ -212,10 +214,10 @@ package com.casualflash.rush.display {
 			if ( strict ) {
 				if ( !child )  Error.throwError( TypeError, 2007, 'child' );
 				// проверим рэндж
-				if ( index < 0 || index > this._list.length ) Error.throwError( RangeError, 2006 );
+				if ( index < 0 || index > this.$list.length ) Error.throwError( RangeError, 2006 );
 			}
-			this._list.splice( this.$getChildIndex( child, strict ), 1 );
-			this._list.splice( index, 0, child );
+			this.$list.splice( this.$getChildIndex( child, strict ), 1 );
+			this.$list.splice( index, 0, child );
 		}
 		
 		/**
@@ -230,6 +232,26 @@ package com.casualflash.rush.display {
 				this.$setChildIndex( child2, index1, false );
 				this.$setChildIndex( child1, index2, false );
 			}
+		}
+
+		/**
+		 * @private
+		 */
+		$internal override function $hitTestPoint(point:Point, shapeFlag:Boolean=false):Boolean {
+			var p:Point;
+			var mi:Matrix;
+			for each ( var child:DisplayObject2D in this.$list ) {
+				if ( child.$changed & 2 ) child.$updateMatrix();
+				mi = child.$matrix.clone();
+				mi.invert();
+				p = mi.transformPoint( point );
+				if ( child.$orign.containsPoint( p ) ) {
+					if ( child.$hitTestPoint( p, shapeFlag ) ) {
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 		
 	}

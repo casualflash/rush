@@ -62,7 +62,7 @@ package com.casualflash.rush.display {
 		 * @keyword					datacontainer.numchildren, numchildren
 		 */
 		public function get numChildren():int {
-			return this._list.length;
+			return this.$list.length;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ package com.casualflash.rush.display {
 		*/
 		
 		public function addChild(child:DisplayObject2D):DisplayObject2D {
-			return this.$addChildAt( child, this._list.length );
+			return this.$addChildAt( child, this.$list.length );
 		}
 		
 		public function addChildAt(child:DisplayObject2D, index:int):DisplayObject2D {
@@ -107,7 +107,7 @@ package com.casualflash.rush.display {
 		
 		public function getChildByName(name:String):DisplayObject2D {
 			// проверяем мы ли родитель
-			for each ( var child:DisplayObject2D in this._list ) {
+			for each ( var child:DisplayObject2D in this.$list ) {
 				if ( child.$name === name ) return child;
 			}
 			return null;
@@ -128,7 +128,7 @@ package com.casualflash.rush.display {
 		public function swapChildrenAt(index1:int, index2:int):void {
 			this.$swapChildrenAt( this.$getChildAt( index1 ), this.$getChildAt( index2 ), index1, index2 );
 		}
-		
+
 	}
 	
 }
