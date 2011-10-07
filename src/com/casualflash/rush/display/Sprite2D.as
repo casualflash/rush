@@ -5,7 +5,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 package com.casualflash.rush.display {
-	
+
+	use namespace $internal;
+
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
@@ -26,6 +28,7 @@ package com.casualflash.rush.display {
 		 */
 		public function Sprite2D() {
 			super();
+			this._graphics.$target = this;
 		}
 		
 		//--------------------------------------------------------------------------
