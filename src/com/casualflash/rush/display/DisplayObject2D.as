@@ -80,6 +80,16 @@ package com.casualflash.rush.display {
 		_BROADCAST_EVENTS[ Event.EXIT_FRAME ] = true;
 		_BROADCAST_EVENTS[ Event.FRAME_CONSTRUCTED ] = true;
 
+		/**
+		 * @private
+		 */
+		private static const _RAD2DEG:Number = 180 / Math.PI;
+
+		/**
+		 * @private
+		 */
+		private static const _DEG2RAD:Number = Math.PI / 180;
+
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
@@ -148,11 +158,6 @@ package com.casualflash.rush.display {
 		 * @private
 		 */
 		$internal const $matrix:Matrix = new Matrix();
-
-		/**
-		 * @private
-		 */
-		$internal const $size:Point = new Point();
 
 		//--------------------------------------------------------------------------
 		//
@@ -361,32 +366,53 @@ package com.casualflash.rush.display {
 		//----------------------------------
 		//  rotation
 		//----------------------------------
-
+		
 		/**
 		 * @private
 		 */
-		$internal var $rotation:Number = 0;
+		$internal var $radianRotation:Number = 0;
+		
+		public function get radianRotation():Number {
+			return this.$radianRotation;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set radianRotation(value:Number):void {
+			value %= 360;
+			if ( this.$radianRotation == value ) return;
+			this.$radianRotation = value;
+			this.$changed |= 14;
+		}
+		
+		//----------------------------------
+		//  rotation
+		//----------------------------------
 		
 		public function get rotation():Number {
-			return this.$rotation;
+			return this.$radianRotation * _RAD2DEG;
 		}
 		
 		/**
 		 * @private
 		 */
 		public function set rotation(value:Number):void {
-			if ( this.$rotation == value ) return;
-			this.$rotation = value % 360;
+			value = ( value * _DEG2RAD ) % 360;
+			if ( this.$radianRotation == value ) return;
+			this.$radianRotation = value;
 			this.$changed |= 14;
 		}
 
 		//----------------------------------
 		//  width
 		//----------------------------------
-		
+
+		$internal var $width:Number = 0;
+
 		public function get width():Number {
 			if ( this.$changed & 7 ) this.$updateSize();
-			return this.$size.x;
+			return this.$width;
 		}
 		
 		/**
@@ -394,18 +420,20 @@ package com.casualflash.rush.display {
 		 */
 		public function set width(value:Number):void { // TODO: optimize
 			if ( this.$changed & 7 ) this.$updateSize();
-			if ( this.$size.x == value ) return;
-			this.$matrix.scale( value / this.$size.x, 1 ); // тут видимо накопится погрешность
-			this.$size.x = value;
+			if ( this.$width == value ) return;
+			this.$matrix.scale( value / this.$width, 1 ); // тут видимо накопится погрешность
+			this.$width = value;
 		}
 		
 		//----------------------------------
 		//  height
 		//----------------------------------
-		
+
+		$internal var $height:Number = 0;
+
 		public function get height():Number {
 			if ( this.$changed & 7 ) this.$updateSize();
-			return this.$size.y;
+			return this.$height;
 		}
 		
 		/**
@@ -413,9 +441,9 @@ package com.casualflash.rush.display {
 		 */
 		public function set height(value:Number):void { // TODO: optimize
 			if ( this.$changed & 7 ) this.$updateSize();
-			if ( this.$size.y == value ) return;
-			this.$matrix.scale( 1, value / this.$size.y ); // тут видимо накопится погрешность
-			this.$size.y = value;
+			if ( this.$height == value ) return;
+			this.$matrix.scale( 1, value / this.$height ); // тут видимо накопится погрешность
+			this.$height = value;
 		}
 		
 		//----------------------------------
@@ -748,7 +776,7 @@ package com.casualflash.rush.display {
 //			);
 			this.$matrix.identity();
 			this.$matrix.scale( this.$scaleX, this.$scaleY );
-			this.$matrix.rotate( this.$rotation / 180 * Math.PI );
+			this.$matrix.rotate( this.$radianRotation );
 			this.$matrix.translate( this.$x, this.$y );
 		}
 
@@ -764,7 +792,7 @@ package com.casualflash.rush.display {
 			var d:Number = this.$matrix.d;
 			this.$scaleX = Math.sqrt( a*a + b*b );
 			this.$scaleY = Math.sqrt( c*c + d*d );
-			this.$rotation = Math.atan2( b, a ) / Math.PI * 180;
+			this.$radianRotation = Math.atan2( b, a );
 		}
 
 		/**
@@ -811,12 +839,12 @@ package com.casualflash.rush.display {
 			var bottomRight:Point =	this.$matrix.transformPoint( this.$orign.bottomRight );
 			var bottomLeft:Point =	this.$matrix.transformPoint( new Point( this.$orign.left, this.$orign.bottom ) );
 			var bounds:Rectangle = new Rectangle();
-			bounds.top =		Math.min( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y );
-			bounds.right =		Math.max( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x );
-			bounds.bottom =		Math.max( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y );
-			bounds.left =		Math.min( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x );
-			this.$size.x = bounds.width;
-			this.$size.y = bounds.height;
+			bounds.top =	Math.min( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y );
+			bounds.right =	Math.max( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x );
+			bounds.bottom =	Math.max( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y );
+			bounds.left =	Math.min( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x );
+			this.$width = bounds.width;
+			this.$height = bounds.height;
 		}
 
 		/**

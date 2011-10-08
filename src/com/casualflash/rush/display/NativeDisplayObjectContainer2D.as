@@ -246,12 +246,12 @@ package com.casualflash.rush.display {
 		 */
 		$internal override function $hitTestPoint(point:Point, shapeFlag:Boolean=false):Boolean {
 			var p:Point;
-			var mi:Matrix;
+			var im:Matrix;
 			for each ( var child:DisplayObject2D in this.$list ) {
 				if ( child.$changed & 2 ) child.$updateMatrix();
-				mi = child.$matrix.clone();
-				mi.invert();
-				p = mi.transformPoint( point );
+				im = child.$matrix.clone();
+				im.invert();
+				p = im.transformPoint( point );
 				if ( child.$orign.containsPoint( p ) ) {
 					if ( child.$hitTestPoint( p, shapeFlag ) ) {
 						return true;
