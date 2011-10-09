@@ -205,6 +205,17 @@ package com.casualflash.rush.display {
 			return false;
 		}
 
+		/**
+		 * @private
+		 */
+		$internal override function $draw():void {
+			for each ( var child:DisplayObject2D in this.$list ) {
+				if ( child.visible ) {
+					child.$draw();
+				}
+			}
+		}
+
 	}
-	
+
 }

@@ -74,7 +74,7 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		private static const _BROADCASTER:Shape = new Shape();
+		internal static const $BROADCASTER:Shape = new Shape();
 
 		/**
 		 * @private
@@ -492,7 +492,7 @@ package com.casualflash.rush.display {
 				this.$capture.addEventListener( type, listener, true, priority, useWeakReference );
 			} else {
 				if ( type in _BROADCAST_EVENTS && !this.$bubble.hasEventListener( type ) ) {
-					_BROADCASTER.addEventListener( type, this.$bubble.dispatchEvent, false, 0, true );
+					$BROADCASTER.addEventListener( type, this.$bubble.dispatchEvent, false, 0, true );
 				}
 				this.$bubble.addEventListener( type, listener, false, priority, useWeakReference );
 			}
@@ -506,7 +506,7 @@ package com.casualflash.rush.display {
 			} else {
 				this.$bubble.removeEventListener( type, listener, false );
 				if ( type in _BROADCAST_EVENTS && !this.$bubble.hasEventListener( type ) ) {
-					_BROADCASTER.removeEventListener( type, this.$bubble.dispatchEvent );
+					$BROADCASTER.removeEventListener( type, this.$bubble.dispatchEvent );
 				}
 			}
 		}
@@ -859,6 +859,13 @@ package com.casualflash.rush.display {
 			return true;
 		}
 
+		/**
+		 * @private
+		 */
+		$internal function $draw():void {
+			// must be overriden
+		}
+
 	}
 
 }
@@ -949,7 +956,7 @@ internal final class EventContainer extends Event {
 	public override function clone():Event {
 		return this.$event;
 	}
-	
+
 }
 
 /**

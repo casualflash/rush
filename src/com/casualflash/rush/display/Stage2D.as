@@ -10,6 +10,7 @@ package com.casualflash.rush.display {
 	
 	import flash.display.Stage3D;
 	import flash.display3D.Context3D;
+	import flash.display3D.Context3DTriangleFace;
 	import flash.errors.IllegalOperationError;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
@@ -314,7 +315,8 @@ package com.casualflash.rush.display {
 			this._stage3D.removeEventListener( Event.CONTEXT3D_CREATE, this.handler_context3DCreate );
 			this._stage3D.removeEventListener( ErrorEvent.ERROR, this.handler_error );
 			this.$context = this._stage3D.context3D;
-			this.$context.configureBackBuffer( this._stageWidth, this._stageHeight, 2, true ); // TODO: configure antiAlias & enableDepthAndStencil
+			this.$context.configureBackBuffer( this._stageWidth, this._stageHeight, 2, false ); // TODO: configure antiAlias & enableDepthAndStencil
+			this.$context.setCulling( Context3DTriangleFace.BACK );
 		}
 
 		/**
@@ -325,7 +327,16 @@ package com.casualflash.rush.display {
 			this._stage3D.removeEventListener( ErrorEvent.ERROR, this.handler_error );
 			super.dispatchEvent( event ); // TODO
 		}
-		
+
+		/**
+		 * @private
+		 */
+		private function handler_enterFrame(event:Event):void {
+			this.$context.clear();
+			super.$draw();
+			this.$context.present();
+		}
+
 	}
 	
 }
