@@ -9,6 +9,10 @@ package com.casualflash.rush.display {
 	import flash.events.Event;
 	import flash.events.PressAndTapGestureEvent;
 
+	//--------------------------------------
+	//  Namespaces
+	//--------------------------------------
+	
 	use namespace $internal;
 
 	[ExcludeClass]
@@ -30,7 +34,7 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		$internal static function get(event:PressAndTapGestureEvent):$PressAndTapGestureEvent {
+		$internal static function $get(event:PressAndTapGestureEvent):$PressAndTapGestureEvent {
 			return new $PressAndTapGestureEvent( event.type, event.bubbles, event.cancelable, event.phase, event.localX, event.localY, event.tapLocalX, event.tapLocalY, event.ctrlKey, event.altKey, event.shiftKey );
 		}
 		

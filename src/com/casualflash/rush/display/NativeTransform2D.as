@@ -10,6 +10,10 @@ package com.casualflash.rush.display {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 
+	//--------------------------------------
+	//  Namespaces
+	//--------------------------------------
+	
 	use namespace $internal;
 
 	[ExcludeClass]
@@ -88,10 +92,10 @@ package com.casualflash.rush.display {
 			var bottomRight:Point =	m.transformPoint( bounds.bottomRight );
 			var bottomLeft:Point =	m.transformPoint( new Point( bounds.left, bounds.bottom ) );
 			bounds = new Rectangle();
-			bounds.top =		Math.round( Math.min( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y ) );
-			bounds.right =		Math.round( Math.max( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x ) );
-			bounds.bottom =		Math.round( Math.max( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y ) );
-			bounds.left =		Math.round( Math.min( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x ) );
+			bounds.top =		Math.floor( Math.min( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y ) );
+			bounds.right =		Math.ceil( Math.max( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x ) );
+			bounds.bottom =		Math.ceil( Math.max( topLeft.y, topRight.y, bottomRight.y, bottomLeft.y ) );
+			bounds.left =		Math.floor( Math.min( topLeft.x, topRight.x, bottomRight.x, bottomLeft.x ) );
 			return bounds;
 		}
 

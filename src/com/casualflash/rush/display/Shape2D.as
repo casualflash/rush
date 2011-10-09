@@ -6,6 +6,10 @@
 
 package com.casualflash.rush.display {
 
+	//--------------------------------------
+	//  Namespaces
+	//--------------------------------------
+	
 	use namespace $internal;
 
 	/**

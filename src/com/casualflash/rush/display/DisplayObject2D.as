@@ -22,6 +22,10 @@ package com.casualflash.rush.display {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 
+	//--------------------------------------
+	//  Namespaces
+	//--------------------------------------
+	
 	use namespace $internal;
 
 	//--------------------------------------
@@ -418,10 +422,10 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		public function set width(value:Number):void { // TODO: optimize
+		public function set width(value:Number):void {
 			if ( this.$changed & 7 ) this.$updateSize();
 			if ( this.$width == value ) return;
-			this.$matrix.scale( value / this.$width, 1 ); // тут видимо накопится погрешность
+			this.$matrix.scale( value / this.$width, 1 ); // TODO: тут видимо накопится погрешность
 			this.$width = value;
 		}
 		
@@ -439,10 +443,10 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		public function set height(value:Number):void { // TODO: optimize
+		public function set height(value:Number):void {
 			if ( this.$changed & 7 ) this.$updateSize();
 			if ( this.$height == value ) return;
-			this.$matrix.scale( 1, value / this.$height ); // тут видимо накопится погрешность
+			this.$matrix.scale( 1, value / this.$height ); // TODO: тут видимо накопится погрешность
 			this.$height = value;
 		}
 		
@@ -541,7 +545,7 @@ package com.casualflash.rush.display {
 			if ( this.$changed & 1 ) this.$updateOrign();
 			if ( targetCoordinateSpace && targetCoordinateSpace !== this ) {
 
-				var m:Matrix = this.$getConcatedMatrix().clone(); // TODO: предположим, что матрицы закэшированы
+				var m:Matrix = this.$getConcatedMatrix().clone();
 				var im:Matrix;
 
 				if ( targetCoordinateSpace is DisplayObject2D ) {

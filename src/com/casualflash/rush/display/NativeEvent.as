@@ -14,6 +14,12 @@ package com.casualflash.rush.display {
 	import flash.events.Event;
 
 	//--------------------------------------
+	//  Namespaces
+	//--------------------------------------
+
+	use namespace $internal;
+
+	//--------------------------------------
 	//  Excluded APIs
 	//--------------------------------------
 	
@@ -32,14 +38,6 @@ package com.casualflash.rush.display {
 	 * @created					01.10.2011 19:44:49
 	 */
 	public class NativeEvent extends Event implements INativeEvent {
-		
-		//--------------------------------------------------------------------------
-		//
-		//  Namespaces
-		//
-		//--------------------------------------------------------------------------
-		
-		use namespace $internal;
 		
 		//--------------------------------------------------------------------------
 		//

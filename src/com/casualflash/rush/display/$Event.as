@@ -8,6 +8,10 @@ package com.casualflash.rush.display {
 	
 	import flash.events.Event;
 
+	//--------------------------------------
+	//  Namespaces
+	//--------------------------------------
+	
 	use namespace $internal;
 
 	[ExcludeClass]
@@ -33,7 +37,7 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		$internal static function get(event:Event):$Event {
+		$internal static function $get(event:Event):$Event {
 			return new $Event( event.type, event.bubbles, event.cancelable );
 		}
 		

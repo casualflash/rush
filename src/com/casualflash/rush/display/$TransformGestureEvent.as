@@ -9,6 +9,10 @@ package com.casualflash.rush.display {
 	import flash.events.Event;
 	import flash.events.TransformGestureEvent;
 
+	//--------------------------------------
+	//  Namespaces
+	//--------------------------------------
+	
 	use namespace $internal;
 
 	[ExcludeClass]
@@ -30,7 +34,7 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		$internal static function get(event:TransformGestureEvent):$TransformGestureEvent {
+		$internal static function $get(event:TransformGestureEvent):$TransformGestureEvent {
 			return new $TransformGestureEvent( event.type, event.bubbles, event.cancelable, event.phase, event.localX, event.localY, event.scaleX, event.scaleY, event.rotation, event.offsetX, event.offsetY, event.ctrlKey, event.altKey, event.shiftKey );
 		}
 		

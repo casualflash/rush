@@ -15,6 +15,10 @@ package com.casualflash.rush.display {
 	import flash.events.Event;
 	import flash.geom.Matrix;
 
+	//--------------------------------------
+	//  Namespaces
+	//--------------------------------------
+	
 	use namespace $internal;
 
 	//--------------------------------------

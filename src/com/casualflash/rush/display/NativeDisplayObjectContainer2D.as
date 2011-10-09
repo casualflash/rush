@@ -10,6 +10,10 @@ package com.casualflash.rush.display {
 	import flash.geom.Point;
 	import flash.geom.Matrix;
 
+	//--------------------------------------
+	//  Namespaces
+	//--------------------------------------
+	
 	use namespace $internal;
 
 	[ExcludeClass]
@@ -21,31 +25,31 @@ package com.casualflash.rush.display {
 	 * @created					01.10.2011 18:04:48
 	 */
 	internal class NativeDisplayObjectContainer2D extends InteractiveObject2D {
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
 		//
 		//--------------------------------------------------------------------------
-		
+
 		/**
 		 * Constructor
 		 */
 		public function NativeDisplayObjectContainer2D() {
 			super();
 		}
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Variables
 		//
 		//--------------------------------------------------------------------------
-		
+
 		/**
 		 * @private
 		 */
 		$internal const $list:Vector.<DisplayObject2D> = new Vector.<DisplayObject2D>();
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Internal methods
@@ -93,7 +97,7 @@ package com.casualflash.rush.display {
 				this.$parent = null;
 			}
 		}
-		
+
 		/**
 		 * @private
 		 */
@@ -129,66 +133,35 @@ package com.casualflash.rush.display {
 		 * @private
 		 */
 		$internal function $addChildAt(child:DisplayObject2D, index:int):DisplayObject2D {
-			// проверим наличие передоваемого объекта
-			if ( !child ) Error.throwError( TypeError, 2007, 'child' );
-			// проверим рэндж
-			if ( index < 0 || index > this.$list.length ) Error.throwError( RangeError, 2006 );
-			// проверим не мыли это?
-			if ( child === this ) Error.throwError( ArgumentError, 2024 );
-			// если есть родитель, то надо его отуда удалить
-			if ( child.$parent === this ) {
-				this.$setChildIndex( child, index, false );
-			} else {
-				var parent:NativeDisplayObjectContainer2D = child.$parent;
-				if ( parent ) {
-					parent.$removeChildAt(
-						parent.$getChildIndex(
-							child,
-							false
-						),
-						false
-					);
-				}
-				// проверим нашу пренадлежность, вдруг зацикливание
-				if ( child is NativeDisplayObjectContainer2D && ( child as NativeDisplayObjectContainer2D ).$contains( this ) ) {
-					Error.throwError( ArgumentError, 2150 );
-				}
-				// добавляем
-				this.$list.splice( index, 0, child );
-				// обновляем
-				child.$setParent( this );
+			var parent:NativeDisplayObjectContainer2D = child.$parent;
+			if ( parent ) {
+				parent.$removeChildAt( parent.$list.indexOf( child ) );
 			}
-			// возвращаем
+			this.$list.splice( index, 0, child );
+			child.$setParent( this );
 			return child;
 		}
 
 		/**
 		 * @private
 		 */
-		$internal function $removeChildAt(index:int, strict:Boolean=true):DisplayObject2D {
-			if ( strict ) {
-				// проверим рэндж
-				if ( index < 0 || index > this.$list.length ) Error.throwError( RangeError, 2006 );
-			}
-			// удалим
+		$internal function $removeChildAt(index:int):DisplayObject2D {
 			var child:DisplayObject2D = this.$list.splice( index, 1 )[ 0 ];
-			// обновим
 			child.$setParent( null );
-			// вернём
 			return child;
 		}
-		
+
 		/**
 		 * @private
 		 */
 		$internal function $contains(child:DisplayObject2D):Boolean {
-			// проверим нашу пренадлежность, вдруг зацикливание
+			if ( child === this ) return true;
 			if ( child.$parents ) {
 				return child.$parents.indexOf( this ) >= 0;
 			} else {
-				do {
+				while ( child = child.$parent ) {
 					if ( child === this ) return true;
-				} while ( child = child.$parent );
+				};
 				return false;
 			}
 		}
@@ -196,49 +169,20 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		$internal function $getChildAt(index:int):DisplayObject2D {
-			// проверим рэндж
-			if ( index<0 || index>this.$list.length ) Error.throwError( RangeError, 2006 );
-			return this.$list[ index ];
-		}
-		
-		/**
-		 * @private
-		 */
-		$internal function $getChildIndex(child:DisplayObject2D, strict:Boolean=true):int {
-			if ( strict ) {
-				// проверяем мы ли родитель
-				if ( !child || child.$parent !== this ) Error.throwError( ArgumentError, 2025 );
+		$internal function $setChildIndex(child:DisplayObject2D, index:int):void {
+			var i:int = this.$list.indexOf( child );
+			if ( i != index ) {
+				this.$list.splice( i, 1 );
+				this.$list.splice( index, 0, child );
 			}
-			// ищем
-			return this.$list.indexOf( child );
 		}
-		
-		/**
-		 * @private
-		 */
-		$internal function $setChildIndex(child:DisplayObject2D, index:int, strict:Boolean=true):void {
-			if ( strict ) {
-				if ( !child )  Error.throwError( TypeError, 2007, 'child' );
-				// проверим рэндж
-				if ( index < 0 || index > this.$list.length ) Error.throwError( RangeError, 2006 );
-			}
-			this.$list.splice( this.$getChildIndex( child, strict ), 1 );
-			this.$list.splice( index, 0, child );
-		}
-		
+
 		/**
 		 * @private
 		 */
 		$internal function $swapChildrenAt(child1:DisplayObject2D, child2:DisplayObject2D, index1:int, index2:int):void {
-			// надо сперва поставить того кто выше
-			if ( index1 > index2 ) {
-				this.$setChildIndex( child1, index2, false );
-				this.$setChildIndex( child2, index1, false );
-			} else {
-				this.$setChildIndex( child2, index1, false );
-				this.$setChildIndex( child1, index2, false );
-			}
+			this.$list.splice( index1, 1, child2 );
+			this.$list.splice( index2, 1, child1 );
 		}
 
 		/**
@@ -260,7 +204,7 @@ package com.casualflash.rush.display {
 			}
 			return false;
 		}
-		
+
 	}
 	
 }

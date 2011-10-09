@@ -10,6 +10,10 @@ package com.casualflash.rush.display {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 
+	//--------------------------------------
+	//  Namespaces
+	//--------------------------------------
+	
 	use namespace $internal;
 
 	[ExcludeClass]
@@ -31,7 +35,7 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		$internal static function get(event:MouseEvent):$MouseEvent {
+		$internal static function $get(event:MouseEvent):$MouseEvent {
 			return new $MouseEvent( event.type, event.bubbles, event.cancelable, event.localX, event.localY, event.relatedObject, event.ctrlKey, event.altKey, event.shiftKey, event.buttonDown, event.delta );
 		}
 		

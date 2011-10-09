@@ -14,6 +14,10 @@ package com.casualflash.rush.display {
 	import flash.events.TransformGestureEvent;
 	import flash.events.PressAndTapGestureEvent;
 
+	//--------------------------------------
+	//  Namespaces
+	//--------------------------------------
+	
 	use namespace $internal;
 
 	[ExcludeClass]
@@ -39,12 +43,12 @@ package com.casualflash.rush.display {
 		 * @private
 		 */
 		private static const _HASH:Dictionary = new Dictionary( true );
-		_HASH[ Event ] =					$Event.get;
-		_HASH[ MouseEvent ] =				$MouseEvent.get;
-		_HASH[ TouchEvent ] =				$TouchEvent.get;
-		_HASH[ GestureEvent ] =				$GestureEvent.get;
-		_HASH[ TransformGestureEvent ] =	$TransformGestureEvent.get;
-		_HASH[ PressAndTapGestureEvent ] =	$PressAndTapGestureEvent.get;
+		_HASH[ Event ] =					$Event.$get;
+		_HASH[ MouseEvent ] =				$MouseEvent.$get;
+		_HASH[ TouchEvent ] =				$TouchEvent.$get;
+		_HASH[ GestureEvent ] =				$GestureEvent.$get;
+		_HASH[ TransformGestureEvent ] =	$TransformGestureEvent.$get;
+		_HASH[ PressAndTapGestureEvent ] =	$PressAndTapGestureEvent.$get;
 
 		//--------------------------------------------------------------------------
 		//
