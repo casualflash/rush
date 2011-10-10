@@ -25,6 +25,8 @@
     <classEntry path="com.casualflash.rush.display.Stage2D"/>
     <classEntry path="com.casualflash.rush.events.Event2D"/>
     <classEntry path="com.casualflash.rush.geom.Transform2D"/>
+    <classEntry path="com.casualflash.rush.display.Fill"/>
+    <classEntry path="com.casualflash.rush.display.SolidFill"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

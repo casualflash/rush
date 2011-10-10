@@ -78,6 +78,22 @@ package com.casualflash.rush.display {
 		
 		*/
 
+		//--------------------------------------------------------------------------
+		//
+		//  Internal methods
+		//
+		//--------------------------------------------------------------------------
+
+		/**
+		 * @private
+		 */
+		$internal override function $draw():void {
+			for each ( var plane:Fill in this._graphics.$planes ) {
+				
+			}
+			super.$draw();
+		}
+
 	}
-	
+
 }

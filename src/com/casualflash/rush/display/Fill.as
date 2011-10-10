@@ -5,21 +5,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 package com.casualflash.rush.display {
-
-	//--------------------------------------
-	//  Namespaces
-	//--------------------------------------
 	
-	use namespace $internal;
-
 	/**
 	 * @author					BlooDHounD
 	 * @version					1.0
 	 * @playerversion			Flash 10
 	 * @langversion				3.0
-	 * @created					03.10.2011 2:28:36
+	 * @created					10.10.2011 1:31:15
 	 */
-	public class Shape2D extends DisplayObject2D {
+	internal class Fill {
 		
 		//--------------------------------------------------------------------------
 		//
@@ -30,41 +24,27 @@ package com.casualflash.rush.display {
 		/**
 		 * Constructor
 		 */
-		public function Shape2D() {
+		public function Fill() {
 			super();
-			this._graphics.$target = this;
 		}
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
 		//
 		//--------------------------------------------------------------------------
 
-		/**
-		 * @private
-		 */
-		private const _graphics:Graphics2D = new Graphics2D();
-
-		public function get graphics():Graphics2D {
-			return this._graphics;
-		}
+		public const points:Vector.<Number> = new Vector.<Number>();
 
 		//--------------------------------------------------------------------------
 		//
-		//  Internal methods
+		//  Methods
 		//
 		//--------------------------------------------------------------------------
 
-		/**
-		 * @private
-		 */
-		$internal override function $draw():void {
-			for each ( var plane:Fill in this._graphics.$planes ) {
-				
-			}
+		public function dispose():void {
 		}
-		
+
 	}
 
 }
