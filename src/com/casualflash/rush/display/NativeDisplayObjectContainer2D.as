@@ -63,7 +63,7 @@ package com.casualflash.rush.display {
 			this.$changed |= 8;
 			var child:DisplayObject2D;
 			if ( this.$parent ) { // мы потеряли СТАРОГО папу
-				this.$dispatchEventFunction( new $Event( Event.REMOVED, true ) );
+				this.$dispatchEventFunction( $EVENT_REMOVED );
 				if ( this.$stage ) {
 					if ( this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
 						this.$bubble.dispatchEvent( new Event( Event.REMOVED_FROM_STAGE ) );
@@ -81,7 +81,7 @@ package com.casualflash.rush.display {
 						this.$parents = parent.$parents.slice();
 						this.$parents.unshift( parent );
 					}
-					this.$dispatchEventFunction( new $Event( Event.ADDED, true ) );
+					this.$dispatchEventFunction( $EVENT_ADDED );
 					if ( this.$stage ) {
 						if ( this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
 							this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
