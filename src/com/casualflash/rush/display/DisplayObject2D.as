@@ -74,8 +74,18 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		internal static const $BROADCASTER:Shape = new Shape();
+		$internal static const $BROADCASTER:Shape = new Shape();
 
+		/**
+		 * @private
+		 */
+		$internal static const $EVENT_ADDED:$Event = new $Event( Event.ADDED, true );
+
+		/**
+		 * @private
+		 */
+		$internal static const $EVENT_REMOVED:$Event = new $Event( Event.REMOVED, true );
+		
 		/**
 		 * @private
 		 */
@@ -489,7 +499,7 @@ package com.casualflash.rush.display {
 		public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void {
 			if ( useCapture ) {
 				if ( !this.$capture ) this.$capture = new EventDispatcher( this );
-				this.$capture.addEventListener( type, listener, true, priority, useWeakReference );
+				this.$capture.addEventListener( type, listener, false, priority, useWeakReference );
 			} else {
 				if ( type in _BROADCAST_EVENTS && !this.$bubble.hasEventListener( type ) ) {
 					$BROADCASTER.addEventListener( type, this.$bubble.dispatchEvent, false, 0, true );
@@ -501,10 +511,10 @@ package com.casualflash.rush.display {
 		public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false):void {
 			if ( useCapture ) {
 				if ( this.$capture ) {
-					this.$capture.removeEventListener( type, listener, true );
+					this.$capture.removeEventListener( type, listener );
 				}
 			} else {
-				this.$bubble.removeEventListener( type, listener, false );
+				this.$bubble.removeEventListener( type, listener );
 				if ( type in _BROADCAST_EVENTS && !this.$bubble.hasEventListener( type ) ) {
 					$BROADCASTER.removeEventListener( type, this.$bubble.dispatchEvent );
 				}
@@ -657,49 +667,48 @@ package com.casualflash.rush.display {
 		/**
 		 * @private
 		 */
-		$internal function $dispatchEventFunction(event:Event):Boolean {
+		$internal function $dispatchEventFunction(event:Object):Boolean {
 			var canceled:Boolean = false;
 			var parents:Vector.<NativeDisplayObjectContainer2D> = ( this.$parents ? this.$parents : this.$getParents() );
 			var type:String = event.type;
 			var target:NativeDisplayObjectContainer2D;
-			var e:Object;
 			// capture
 			var l:uint = parents.length;
 			for ( var i:int = l-1; i>=0; --i ) {
 				target = parents[ i ];
 				if ( target.$capture && target.$capture.hasEventListener( type ) ) {
-					e = event.clone();
-					e.$eventPhase = EventPhase.CAPTURING_PHASE;
-					e.$target = this;
-					e.$canceled = canceled;
-					CONTAINER.$event = e as Event;
+					event = event.clone();
+					event.$eventPhase = EventPhase.CAPTURING_PHASE;
+					event.$target = this;
+					event.$canceled = canceled;
+					CONTAINER.$event = event as Event;
 					target.$capture.dispatchEvent( CONTAINER );
-					canceled &&= e.$canceled;
-					if ( e.$stopped ) {
-						return canceled;
-					}
+					canceled = event.$canceled;
+					if ( event.$stopped ) return !canceled;
 				}
 			}
 			// at target
 			if ( this.$bubble.hasEventListener( type ) ) {
-				canceled = !this.$bubble.dispatchEvent( event );
-				if ( ( event as Object ).$stopped ) {
-					return canceled;
-				}
+				event = event.clone();
+				event.$eventPhase = EventPhase.AT_TARGET;
+				event.$target = this;
+				event.$canceled = canceled;
+				CONTAINER.$event = event as Event;
+				this.$bubble.dispatchEvent( CONTAINER );
+				canceled = event.$canceled;
+				if ( event.$stopped ) return !canceled;
 			}
 			// bubble
 			for each ( target in parents ) {
 				if ( target.$bubble.hasEventListener( type ) ) {
-					e = event.clone();
-					e.$eventPhase = EventPhase.BUBBLING_PHASE;
-					e.$target = this;
-					e.$canceled = canceled;
-					CONTAINER.$event = e as Event;
+					event = event.clone();
+					event.$eventPhase = EventPhase.BUBBLING_PHASE;
+					event.$target = this;
+					event.$canceled = canceled;
+					CONTAINER.$event = event as Event;
 					target.$bubble.dispatchEvent( CONTAINER );
-					canceled &&= e.$canceled;
-					if ( e.$stopped ) {
-						return canceled;
-					}
+					canceled = event.$canceled;
+					if ( event.$stopped ) return !canceled;
 				}
 			}
 			return canceled;
@@ -711,7 +720,7 @@ package com.casualflash.rush.display {
 		$internal function $setParent(parent:NativeDisplayObjectContainer2D):void {
 			this.$changed |= 8;
 			if ( this.$parent ) {
-				this.$dispatchEventFunction( new $Event( Event.REMOVED, true ) );
+				this.$dispatchEventFunction( $EVENT_REMOVED );
 				if ( this.$stage  && this.$bubble.hasEventListener( Event.REMOVED_FROM_STAGE ) ) {
 					this.$bubble.dispatchEvent( new Event( Event.REMOVED_FROM_STAGE ) );
 				}
@@ -724,7 +733,7 @@ package com.casualflash.rush.display {
 						this.$parents = parent.$parents.slice();
 						this.$parents.unshift( parent );
 					}
-					this.$dispatchEventFunction( new $Event( Event.ADDED, true ) );
+					this.$dispatchEventFunction( $EVENT_ADDED );
 					if ( this.$stage && this.$bubble.hasEventListener( Event.ADDED_TO_STAGE ) ) {
 						this.$bubble.dispatchEvent( new Event( Event.ADDED_TO_STAGE ) );
 					}
